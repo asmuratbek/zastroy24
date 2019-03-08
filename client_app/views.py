@@ -149,9 +149,9 @@ import paypalrestsdk
 def payments(request):
     paypalrestsdk.configure({
         "mode": "sandbox",  # sandbox or live
-        "client_id": "Abk1Rf3mtx3YbURcEVtzexkskze4Ggpkh2MO0PYN2oB6Bh5bWqRURBNjTFdFdkAh2VK4o_v0D6_Jwd8x",
-        "client_secret": "EK_1N7EA5ui7BNDEuZuhRQ1dTcdu14GpWBQCRkyUN7on4LZmuZh1QGO8MCV9JENL0a-kpV2xmGsue92X"})
-    access_token = 'access_token$sandbox$t39k5s8rk45z4rzr$6056e342d239aa6d8e53a4b2b07bf3f0'
+        "client_id": "",
+        "client_secret": ""})
+    access_token = ''
 
     gateway = braintree.BraintreeGateway(access_token=access_token)
     client_token = gateway.client_token.generate()
