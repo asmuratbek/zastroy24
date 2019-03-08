@@ -1,0 +1,342 @@
+{% extends 'base.html' %}
+
+{% load staticfiles product_template_helpers categories_helper client_helper %}
+
+{% block title %}Главная{% endblock %}
+{% block css %}
+    <style>
+    .uk-dotnav>li:first-child{
+        padding-left: 0;
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <section class="home-slider uk-margin-medium-top">
+        <div class="uk-container">
+            <div class="uk-grid uk-card-default uk-box-shadow-hover-xlarge  uk-grid-collapse  uk-grid-match">
+                <div class="uk-width-expand">
+                    <div class="uk-position-relative" uk-slideshow="animation: scale; min-height: 300;max-height: 360 ">
+                        <div class="uk-position-relative uk-visible-toggle uk-light">
+
+                            <ul class="uk-slideshow-items">
+                                {% for slide in slides %}
+                                    <li class="uk-grid uk-margin-remove">
+                                        <div class=" uk-width-expand@m uk-cover-container">
+                                            {% if slide.link %}
+                                                <a href="{{ slide.link }}"
+                                                   style="position: relative;display: block;width: 100%;height: 100%;z-index: 1;"></a>
+                                            {% endif %}
+                                            <img src="{{ slide.image.url }}" alt="" uk-cover>
+                                        </div>
+                                        {% if slide.title %}
+                                            <div class="uk-width-1-3@m bg-green uk-flex-middle">
+                                                <div class="uk-padding">
+                                                    {% if slide.is_sale %}
+                                                        <span class="sale">
+                                                        Акция
+                                                    </span>
+                                                    {% endif %}
+                                                    <p>{{ slide.short_description }}</p>
+                                                    <h3>{{ slide.title }}</h3>
+                                                    <a href="{{ slide.link }}"
+                                                       class="uk-button uk-button-large uk-button-default">Подробнее</a>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+
+                            <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#"
+                               uk-slidenav-previous
+                               uk-slideshow-item="previous"></a>
+                            <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#"
+                               uk-slidenav-next uk-slideshow-item="next"></a>
+
+                        </div>
+                        <ul class="uk-dotnav">
+                            {% for slide in slides %}
+                                <li uk-slideshow-item="{{ forloop.counter0 }}"
+                                    {% if forloop.counter0 == 0 %}class="uk-active"{% endif %}><a
+                                        href="#">Item {{ forloop.counter }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="catalog_of_building_materials uk-margin-medium-top">
+        <div class="uk-container uk-container-large ">
+            <h2 class="title_border-left">
+                КАТАЛОГ СТРОИТЕЛЬНЫХ МАТЕРИАЛОВ
+                <span class="uk-float-right">
+                Общее количество товаров: <b>{{ product_count }}</b>
+            </span>
+            </h2>
+            <div class="uk-grid uk-grid-small uk-grid-match uk-margin-medium-top uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-2@s"
+                 uk-grid>
+                {% for category in categories %}
+                    <div class="item uk-margin-bottom">
+                        <div class="uk-card uk-card-default uk-box-shadow-hover-xlarge uk-card-body">
+                            <div class="img-wrapper">
+                                {% if category.thumbnail %}
+                                    <img src="{{ category.thumbnail.url }}" alt="">
+                                {% endif %}
+                            </div>
+                            <h3>
+                                <a href="{% url 'categories:parent_category' category_slug=category.slug %}">{{ category.title }}</a>
+                            </h3>
+                            <ul>
+                                {% for sub_category in category.sub_categories %}
+                                    <li>
+                                        <a href="{% url 'categories:second_level_category' category_slug=category.slug second_category_slug=sub_category.slug %}">{{ sub_category.title }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+
+                        </div>
+                    </div>
+                {% endfor %}
+                {% if promotions %}
+                    <div class="item sale">
+                        <div class="uk-card uk-card-default uk-box-shadow-hover-xlarge uk-card-body">
+                            <div class="img-wrapper">
+                                <img src="{% static 'img/png/8-8.png' %}" alt="">
+                            </div>
+                            <h3>АКЦИИ</h3>
+                            <ul>
+                                {% for item in promotions %}
+                                    <li><a href="{% url 'promotions:single' slug=item.slug %}">{{ item.title }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    {% if promotions %}
+        <section class="best_promotions uk-margin-medium-top">
+            <div class="uk-container uk-container-large">
+                <h2 class="title_border-left">
+                    ЛУЧШИЕ АКЦИИ
+                    <a href="{% url 'promotions:list' %}" class="uk-float-right uk-button uk-button-default">
+                        Смотреть все
+                        <span class="uk-margin-small-left" uk-icon="icon: chevron-right"></span>
+                    </a>
+                </h2>
+                <div class="uk-grid  uk-margin-medium-top uk-child-width-1-2@m" uk-grid
+                     uk-height-match="target: div > div > div >.title">
+                    {% for item in promotions %}
+                        <div>
+                            <div class="uk-box-shadow-hover-xlarge uk-card-default">
+                                <div class="uk-card-media-left uk-cover-container">
+                                    <div class="uk-position-top-left uk-overlay uk-overlay-default">
+                                        {% if item.expires_date %}
+                                            <span uk-icon="icon: calendar" class="uk-margin-small-right"></span>
+                                            Акция действует до {{ item.expires_date|date:"d M Y года" }}
+                                        {% else %}
+                                            АКЦИЯ!
+                                        {% endif %}
+                                    </div>
+                                    <img src="{{ item.product.main_image.url }}" alt="{{ item.product.title }}"
+                                         uk-cover>
+                                    <canvas width="600" height="400"></canvas>
+                                </div>
+                                <div class="uk-card-footer">
+                                    <div class="uk-grid uk-grid-collapse ">
+                                        <div class="uk-width-expand@m title ">
+                                            <h3>{{ item.title }}</h3>
+                                        </div>
+                                        <a class="uk-width-auto@m uk-flex uk-flex-middle url"
+                                           href="{% url 'promotions:single' slug=item.slug %}">
+                                            Подробнее
+                                            <span class="uk-margin-small-left" uk-icon="icon: chevron-right"></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    {% endif %}
+
+    {% if posts %}
+        <section class="articles_tips uk-margin-medium-top">
+            <div class="uk-container uk-container-large">
+                <h2 class="title_border-left">
+                    Статьи и Советы
+                    <a href="{% url 'news:list' %}" class="uk-float-right uk-button uk-button-default">
+                        Смотреть все
+                        <span class="uk-margin-small-left" uk-icon="icon: chevron-right"></span>
+                    </a>
+                </h2>
+                <div class="uk-grid uk-grid-match uk-margin-medium-top uk-child-width-1-3@m" uk-grid>
+                    {% for post in posts %}
+                        <div>
+                            <div class="uk-card uk-card-default uk-box-shadow-hover-xlarge">
+                                <div class="uk-card-media-top uk-cover-container">
+                                    <img src="{% if post.preview %}{{ post.preview.url }}{% else %}{% endif %}"
+                                         alt="{{ post.title }}" uk-cover>
+                                    <canvas width="400" height="250"></canvas>
+                                </div>
+                                <div class="uk-card-body">
+                                    <h3 class="uk-card-title">{{ post.title }}</h3>
+                                    <p>{{ post.short_description }}</p>
+                                    <div class="uk-grid uk-flex-middle uk-grid-collapse uk-child-width-1-2@m" uk-grid>
+                                        <div class="uk-text-left@m uk-text-center">
+                                            <i class="fa fa-eye" aria-hidden="true"></i>
+                                            <span>{{ post.views }}</span>
+                                        </div>
+                                        <div class="uk-text-right@m uk-text-center">
+                                            <a href="{% url 'news:single' slug=post.slug %}"
+                                               class="uk-button uk-button-default url">
+                                                Читать
+                                                <span class="" uk-icon="icon: chevron-right"></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    {% endif %}
+
+
+    <section class="steps uk-margin-medium-top">
+        <div class="uk-container uk-container-large ">
+            <div class="uk-position-relative">
+                <div class="uk-grid uk-card-default  uk-box-shadow-hover-xlarge uk-grid-match uk-grid-collapse uk-child-width-1-5@l uk-child-width-1-3@m uk-child-width-1-2@s "
+                     uk-grid>
+                    <div class=" bg-white">
+                        <div class="uk-card uk-card-default uk-card-body uk-text-left">
+                            <div class="img-wrapper">
+                                <img src="{% static 'img/png/st1.png' %}" alt="">
+                            </div>
+                            <h3>Нам доверяют</h3>
+                            <p>{{ trust|clean_html|slice:"88" }}</p>
+                        </div>
+                        <span uk-icon="icon: plus-circle; ratio: 2;"
+                              uk-toggle="target: #toggle-usage1; animation: uk-animation-scale-up; queued: true; duration: 300"></span>
+                    </div>
+
+                    <div class="uk-text-left@s uk-text-center bg-white">
+                        <div class="uk-card uk-card-default uk-card-body uk-text-left">
+                            <div class="img-wrapper">
+                                <img src="{% static 'img/png/st2.png' %}" alt="">
+                            </div>
+                            <h3>Просто заказать</h3>
+                            <p>{{ easy_order|clean_html|slice:"88" }}</p>
+                        </div>
+                        <span uk-icon="icon: plus-circle; ratio: 2;"
+                              uk-toggle="target: #toggle-usage2; animation: uk-animation-scale-up; queued: true; duration: 300"></span>
+                    </div>
+                    <div class="uk-text-left@s uk-text-center bg-white">
+                        <div class="uk-card uk-card-default uk-card-body uk-text-left">
+                            <div class="img-wrapper">
+                                <img src="{% static 'img/png/st3.png' %}" alt="">
+                            </div>
+                            <h3>Доставка</h3>
+                            <p>{{ delivery|clean_html|slice:"88" }}</p>
+                        </div>
+                        <span uk-icon="icon: plus-circle; ratio: 2;"
+                              uk-toggle="target: #toggle-usage3; animation: uk-animation-scale-up; queued: true; duration: 300"></span>
+                    </div>
+                    <div class="uk-text-left@s uk-text-center bg-white">
+                        <div class="uk-card uk-card-default uk-card-body uk-text-left">
+                            <div class="img-wrapper">
+                                <img src="{% static 'img/png/st4.png' %}" alt="">
+                            </div>
+                            <h3>Легко оплатить</h3>
+                            <p>{{ easy_pay|clean_html|slice:"88" }}</p>
+                        </div>
+                        <span uk-icon="icon: plus-circle; ratio: 2;"
+                              uk-toggle="target: #toggle-usage4; animation: uk-animation-scale-up; queued: true; duration: 300"></span>
+                    </div>
+                    <div class="uk-text-left@s uk-text-center bg-white">
+                        <div class="uk-card uk-card-default uk-card-body uk-text-left">
+                            <div class="img-wrapper">
+                                <img src="{% static 'img/png/st5.png' %}" alt="">
+                            </div>
+                            <h3>Скидки и акции</h3>
+                            <p>{{ i_promotions|clean_html|slice:"88" }}</p>
+                        </div>
+                        <span uk-icon="icon: plus-circle; ratio: 2;"
+                              uk-toggle="target: #toggle-usage5; animation: uk-animation-scale-up; queued: true; duration: 300"></span>
+                    </div>
+                </div>
+                <div class="uk-position-cover  uk-overlay-default" id="toggle-usage1" hidden>
+                    <div class="uk-padding">
+                        <button class="uk-modal-close-default" type="button" uk-close
+                                uk-toggle="target: #toggle-usage1"></button>
+                        <h4>Нам доверяют!</h4>
+                        {{ trust|safe }}
+                    </div>
+                </div>
+                <div class="uk-position-cover  uk-overlay-default" id="toggle-usage2" hidden>
+                    <div class="uk-padding">
+                        <button class="uk-modal-close-default" type="button" uk-close
+                                uk-toggle="target: #toggle-usage2"></button>
+                        <h4>Просто заказать</h4>
+                        {{ easy_order|safe }}
+                    </div>
+                </div>
+                <div class="uk-position-cover  uk-overlay-default" id="toggle-usage3" hidden>
+                    <div class="uk-padding">
+                        <button class="uk-modal-close-default" type="button" uk-close
+                                uk-toggle="target: #toggle-usage3"></button>
+                        <h4>Доставка</h4>
+                        {{ delivery|safe }}
+                    </div>
+                </div>
+                <div class="uk-position-cover  uk-overlay-default" id="toggle-usage4" hidden>
+                    <div class="uk-padding">
+                        <button class="uk-modal-close-default" type="button" uk-close
+                                uk-toggle="target: #toggle-usage4"></button>
+                        <h4>Легко оплатить</h4>
+                        {{ easy_pay|safe }}
+                    </div>
+                </div>
+                <div class="uk-position-cover  uk-overlay-default" id="toggle-usage5" hidden>
+                    <div class="uk-padding">
+                        <button class="uk-modal-close-default" type="button" uk-close
+                                uk-toggle="target: #toggle-usage5"></button>
+                        <h4>Скидки и акции</h4>
+                        {{ i_promotions|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about_company uk-margin-medium-top">
+        <div class="uk-container uk-container-large">
+            <div class="uk-grid  uk-box-shadow-hover-xlarge uk-card-default uk-grid-collapse bg-white uk-flex-middle">
+                <div class="uk-width-auto@m  uk-visible@m">
+                    <div class="uk-padding ">
+                        <img src="{% static 'img/png/about.png' %}" alt="">
+                    </div>
+                </div>
+                <div class="uk-width-expand">
+                    <div class="uk-padding ">
+                        <h2 class="title_border-left">
+                            О компании
+                        </h2>
+                        {{ about_text|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

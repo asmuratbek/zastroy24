@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% load staticfiles product_template_helpers %}
+
+{% block title %}Сравнение товаров{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/smoothTouchScroll.css' %}" />
+{% endblock %}
+
+{% block content %}
+    <div class="uk-container uk-container-large uk-margin-medium-top">
+        <ul class="uk-breadcrumb uk-flex-middle uk-flex">
+            <li><a href="{% url 'client_app:index' %}"><span uk-icon="icon: home"></span></a></li>
+            <li><span>Сравнение товаров</span></li>
+        </ul>
+    </div>
+    <section class="comparisons uk-margin-medium-top">
+        <div class="uk-container uk-container-large">
+            <h1 class="title_border-left">Сравнение товаров</h1>
+            <div class="uk-box-shadow-hover-xlarge uk-padding uk-card-default">
+                <div class="uk-overflow-auto" id="main-table">
+                {% if products %}
+                    <table class="uk-table uk-table-striped uk-table-hover uk-table-middle uk-table-divider">
+                        <thead>
+                        <tr uk-grid uk-height-match="target: > th > div > div > h3">
+                            <th></th>
+                            {% for product in products %}
+                                <th class="uk-table-expand">
+                                    <div class="item-product-global">
+                                        <div class="uk-card-small uk-position-relative uk-box-shadow-small uk-box-shadow-hover-large uk-card-default uk-card-body">
+                                            <div class="uk-card-badge uk-label">Артикул: <span>{{ product.article }}</span></div>
+                                            <div class="uk-cover-container uk-position-relative uk-height-small">
+                                                <img src="{{ product.main_image.url }}" data-lazy="{{ product.main_image.url }}" alt="{{ product.title }}" uk-cover>
+                                            </div>
+                                            <h3 class="uk-card-title"><a href="{% url 'products:product_single' product_slug=product.slug %}">{{ product.title }}</a></h3>
+                                            <hr>
+                                            <h4>{% if product.get_price %}<span>от</span> {{ product.get_price }} <span>Руб./шт</span>{% else %}Цена по запросу{% endif %}</h4>
+                                            <div class="uk-text-center uk-margin-small-bottom products-grid-loader" style="display: none;">
+                                                <div uk-spinner></div>
+                                            </div>
+                                            <a href="#" style="display: {% if abstract_basket|contains:product.id %}block{% else %}none{% endif %} !important; width: 100%;" class="uk-button uk-button-default uk-margin-bottom uk-display-block product-already-in-basket-trigger">
+                                                <span class="uk-margin-small-right uk-icon" uk-icon="icon: cart"></span>
+                                                В корзине
+                                            </a>
+                                            <a style="{% if abstract_basket|contains:product.id %}display: none !important;{% endif %} width: 100%" class="uk-button uk-button-default uk-margin-bottom product-add-to-basket-trigger uk-width-expand" data-id="{{ product.id }}" href="{% url 'orders:basket_add' p_slug=product.slug %}">
+                                                <span class="uk-margin-small-right uk-icon" uk-icon="icon: cart"></span>
+                                                В корзину
+                                            </a>
+                                            <span uk-icon="close" style="position: absolute; right: 10px; top: 10px; cursor: pointer;" uk-tooltip title="Убрать из сравнения" data-url="{% url 'orders:comparison_add_delete' p_slug=product.slug %}" class="remove-from-comparision"></span>
+                                        </div>
+                                    </div>
+                                </th>
+                            {% endfor %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><b>Бренд</b></td>
+                            {% for item in products %}
+                                <td>
+                                    {{ item.brand.title }}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                        {% for prop in properties %}
+                            <tr class="active-comparisons">
+                                <td><b>{{ prop.key.title }} {% if prop.value_type %}({{ prop.value_type }}){% endif %}</b></td>
+                                {% for item in products %}
+                                    <td>
+                                        {% for p_props in item.property.all %}
+                                            {% if p_props.key.id == prop.key.id %}
+                                                {{ p_props.value }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <h3>Нет товаров для сравнения</h3>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{% static 'js/jquery-ui-1.10.3.custom.min.js' %}"></script>
+    <script src="{% static 'js/jquery.kinetic.min.js' %}"></script>
+    <script src="{% static 'js/jquery.smoothTouchScroll.min.js' %}"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#main-table").smoothTouchScroll();
+        });
+
+        $(document).ready(function () {
+            var removeButtons = $('.remove-from-comparision');
+
+            removeButtons.each(function (i, obj) {
+                $(obj).on('click', function () {
+                    var url = $(obj).attr('data-url');
+
+                    $.ajax({
+                        url: url,
+                        method: 'GET',
+                        dataType: 'JSON',
+                        success: function (response) {
+                            if(response.mode !== 'add') {
+                                document.location.reload();
+                            }
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+{% endblock %}

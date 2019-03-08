@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Прайс лист{% endblock %}
+
+{% block content %}
+    <div class="uk-container uk-container-large uk-margin-medium-top">
+        <ul class="uk-breadcrumb uk-flex-middle uk-flex">
+            <li><a href="{% url 'client_app:index' %}"><span uk-icon="icon: home"></span></a></li>
+            <li><span>Прайс лист</span></li>
+        </ul>
+    </div>
+    <section class="left-menu uk-margin-medium-top">
+        <div class="uk-container uk-container-large">
+            <div class="uk-grid uk-grid-large" uk-grid>
+                <div class="uk-width-1-6@l uk-width-1-4@m">
+                    <div class="uk-box-shadow-hover-xlarge side-bar uk-card-default">
+                        {% include 'app/partial/static-pages-sidebar.html' %}
+                    </div>
+                </div>
+                <div class="uk-width-expand">
+                <h1 class="title_border-left">прайс лист</h1>
+                <div class="prise-list uk-box-shadow-hover-xlarge uk-padding uk-card-default">
+                    <h3>Краткая информация</h3>
+                    <p>Отвечая на вопрос о взаимоотношении идеального ли и материального ци, Дай Чжень заявлял, что герменевтика порождает и обеспечивает напряженный даосизм, не учитывая мнения авторитетов.</p>
+                    <div class="uk-grid uk-child-width-auto@m" uk-grid="">
+                        <div class="">
+                            <img src="{% static 'img/png/file.png' %}" alt="" class="uk-margin-small-right">
+                            <a href="{{ price_list.price_list.url }}" class="download">Скачать прайс лист в Excel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

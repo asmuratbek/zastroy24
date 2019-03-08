@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% load staticfiles widget_tweaks %}
+
+{% block title %}Отзывы{% endblock %}
+
+{% block content %}
+    <div class="uk-container uk-container-large uk-margin-medium-top">
+        <ul class="uk-breadcrumb uk-flex-middle uk-flex">
+            <li><a href="{% url 'client_app:index' %}"><span uk-icon="icon: home"></span></a></li>
+            <li><span>Отзывы</span></li>
+        </ul>
+    </div>
+    <section class="left-menu uk-margin-medium-top">
+        <div class="uk-container uk-container-large">
+            <div class="uk-grid uk-grid-large" uk-grid>
+                <div class="uk-width-1-6@l uk-width-1-4@m">
+                    <div class="uk-box-shadow-hover-xlarge side-bar uk-card-default">
+                        {% include 'app/partial/static-pages-sidebar.html' %}
+                    </div>
+                </div>
+                <div class="uk-width-expand">
+                    <h1 class="title_border-left">отзывы</h1>
+                    <div class="comments uk-box-shadow-hover-xlarge uk-padding uk-card-default">
+                        {% for post in reviews %}
+                            <article class="uk-comment ">
+                                <header class="uk-comment-header uk-grid-medium uk-flex-middle" uk-grid>
+                                    <div class="uk-width-auto">
+                                        <img class="uk-comment-avatar" src="{% static 'img/png/comm.png' %}" width="80" height="80" alt="">
+                                    </div>
+                                    <div class="uk-width-expand">
+                                        <h4 class="uk-comment-title uk-margin-remove"><a class="uk-link-reset" href="#">{{ post.created_at|date:"d M Y" }}</a></h4>
+                                        <h3 class="uk-comment-meta uk-margin-remove-top">
+                                            клиент: <span class="name">{{ post.name }}</span>
+                                        </h3>
+                                    </div>
+                                </header>
+                                <div class="uk-comment-body uk-comment-primary">
+                                    <p>{{ post.message }}</p>
+                                </div>
+                            </article>
+                            <hr class="uk-divider-icon">
+                        {% empty %}
+                            <p>Отзывов пока нет. Напиши первый отзыв!</p>
+                            <hr class="uk-divider-icon">
+                        {% endfor %}
+
+                        <div class="uk-padding" style="background: #e2e8e5;">
+                            <form class="uk-grid-small uk-width-1-2@s uk-margin-auto" uk-grid id="r-form">
+                                <legend class="uk-width-1-1"><b>ОСТАВИТЬ ВАШ ОТЗЫВ</b></legend>
+                                <div class="uk-width-1-2@l uk-width-1-1@s">
+                                    <label >Имя *</label>
+                                    {% render_field form.name class='uk-input' %}
+                                </div>
+                                <div class="uk-width-1-2@l uk-width-1-1@s">
+                                    <label >Эл. почта *</label>
+                                    {% render_field form.email class='uk-input' type='email' %}
+                                </div>
+                                <div class="uk-width-1-1@s">
+                                    <label >Комментарий *</label>
+                                    {% render_field form.message class='uk-textarea' rows='10' %}
+                                </div>
+                                <div class="uk-width-1-1">
+                                    <button class="uk-button uk-button-default" type="submit">Оставить комментарий</button>
+                                </div>
+                            </form>
+                            <div class="confirm uk-text-center">
+                                <div uk-spinner id="r-loader" style="display: none;"></div>
+                                <h2 id="r-result" style="display: none;">Ваше сообщение отправлено! Соощение появится на этой странице после одобрения модераторами!</h2>
+                                <div class="uk-alert-success" uk-alert id="r-alert" style="display: none;">
+                                    <a class="uk-alert-close" uk-close></a>
+                                    <p>Ваше сообщение отправлено!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+            var form = $('#r-form');
+            var loader = $('#r-loader');
+            var resultMessage = $('#r-result');
+            var _alert = $('#r-alert');
+
+            form.on('submit', function (e) {
+                e.preventDefault();
+                var data = {
+                    'name': $('#id_name').val(),
+                    'email': $('#id_email').val(),
+                    'message': $('#id_message').val(),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                };
+                form.fadeOut('fast', function () {
+                    loader.fadeIn('fast');
+                    $.ajax({
+                        url: '{% url 'client_app:reviews' %}',
+                        method: 'POST',
+                        data: data,
+                        dataType: 'JSON',
+                        success: function (response) {
+                            if(response.success) {
+                                loader.fadeOut('fast', function () {
+                                    resultMessage.fadeIn('fast');
+                                    _alert.fadeIn('fast');
+                                });
+                            } else {
+                                loader.fadeOut('fast', function () {
+                                _alert.removeClass('uk-alert-success').addClass('uk-alert-danger');
+                                _alert.find('p').html('Произошла неизвестная ошибка');
+                                _alert.fadeIn('fast');
+                                form.fadeIn('fast');
+                            });
+                            }
+                        },
+                        error: function () {
+                            loader.fadeOut('fast', function () {
+                                _alert.removeClass('uk-alert-success').addClass('uk-alert-danger');
+                                _alert.find('p').html('Произошла неизвестная ошибка');
+                                _alert.fadeIn('fast');
+                                form.fadeIn('fast');
+                            });
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+{% endblock %}

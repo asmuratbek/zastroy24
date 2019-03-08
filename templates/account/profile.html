@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ request.user.get_full_name }}{% endblock %}
+
+{% block content %}
+
+    <section class="profile">
+        <div class="uk-container">
+            <div class="uk-grid uk-grid-small uk-margin-remove ">
+                <div class="uk-margin-medium-bottom uk-width-1-4@l">
+                    <h2>Profil Information:</h2>
+                    <ul class="uk-margin">
+                        <li>
+                            <h5>Name</h5>
+                            <p>{{ request.user.get_full_name }}</p>
+                        </li>
+                        <li>
+                            <h5>Email</h5>
+                            <p>{{ request.user.email }}</p>
+                        </li>
+                        <li>
+                            <h5>Telefonnumer</h5>
+                            <p>2925 348573984</p>
+                        </li>
+                        <li>
+                            <h5>Adresse</h5>
+                            <p>Lorem ipsum dolor sit amet.</p>
+                        </li>
+                    </ul>
+                    <form>
+
+                        <div class="uk-margin">
+                            <label class="uk-form-label uk-display-block">Passwort ändern</label>
+                            <div class="uk-inline uk-display-block" title="Neues Passwort eingeben"
+                                 uk-tooltip>
+                                <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                                <input class="uk-input " type="text" placeholder="Neues Passwort eingeben">
+                            </div>
+                        </div>
+
+                        <button class="uk-button uk-button-default">Speichern</button>
+                    </form>
+
+                </div>
+
+                <div class="uk-margin-medium-bottom uk-width-3-4@l">
+                    <table class="table-parent">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Betrag</th>
+                            <th>Rabatt</th>
+                            <th>Zustellung</th>
+                            <th>Data</th>
+                            <th>Waren</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>54</td>
+                            <td>4200</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>27 августа 2017 в 20:23</td>
+                            <td>
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Preis</th>
+                                        <th>Anzahl</th>
+                                        <th>Farbe</th>
+                                        <th>Größe</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>Футболка для девочек</td>
+                                        <td>1200</td>
+                                        <td>5</td>
+                                        <td><span class="color"></span></td>
+                                        <td>5 лет (110см)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Блузка с элементами кружева</td>
+                                        <td>4200</td>
+                                        <td>1</td>
+                                        <td><span class="color"></span></td>
+                                        <td>XS</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td>Nicht bezahlt</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+{% endblock %}

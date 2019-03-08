@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% load staticfiles widget_tweaks %}
+
+{% block title %}Партнёрам{% endblock %}
+
+{% block content %}
+    <div class="uk-container uk-container-large uk-margin-medium-top">
+        <ul class="uk-breadcrumb uk-flex-middle uk-flex">
+            <li><a href="{% url 'client_app:index' %}"><span uk-icon="icon: home"></span></a></li>
+            <li><span>Партнёрам</span></li>
+        </ul>
+    </div>
+    <section class="left-menu uk-margin-medium-top">
+        <div class="uk-container uk-container-large">
+            <div class="uk-grid uk-grid-large" uk-grid>
+                <div class="uk-width-1-6@l uk-width-1-4@m">
+                    <div class="uk-box-shadow-hover-xlarge side-bar uk-card-default">
+                        {% include 'app/partial/static-pages-sidebar.html' %}
+                    </div>
+                </div>
+                <div class="uk-width-expand">
+                    <h1 class="title_border-left">Партнерам</h1>
+                    <div class="partners uk-box-shadow-hover-xlarge uk-padding uk-card-default">
+                        <h3>Как стать нашим партнерам?</h3>
+                        <p>Компания «Веста Строй» приглашает заинтересованных лиц к долгосрочному продуктивному сотрудничеству. В нашей компании существуют специальные условия для наших партнеров.  </p>
+                        <p>Для того чтобы стать партнером нашей компании, вам необходимо оставить ваши данные и наш
+                            менеджер перезвонит вам и проконсультирует вас в интересующих вам вопросах.</p>
+                        <h3>Оставить заявку на партнерство</h3>
+                        <div class="uk-grid uk-child-width-auto@m" uk-grid="">
+                            <div class="">
+                                <img src="{% static 'img/png/user.png' %}" alt="" class="uk-margin-small-right">
+                                <b>Данные для нашего менеджера</b>
+                            </div>
+                        </div>
+                        <form class="uk-grid-small uk-width-1-2@s " uk-grid id="p-form">
+                            <div class="uk-width-1-2@l uk-width-1-1@s">
+                                <label >Фамилия *</label>
+                                {% render_field form.last_name class='uk-input' %}
+                            </div>
+                            <div class="uk-width-1-2@l uk-width-1-1@s">
+                                <label >Имя *</label>
+                                {% render_field form.first_name class='uk-input' %}
+                            </div>
+                            <div class="uk-width-1-2@l uk-width-1-1@s">
+                                <label >Эл. почта *</label>
+                                {% render_field form.email class='uk-input' %}
+                            </div>
+                            <div class="uk-width-1-2@l uk-width-1-1@s">
+                                <label >Телефон *</label>
+                                {% render_field form.phone_number class='uk-input' %}
+                            </div>
+                            <div class="uk-width-1-1">
+                                <button class="uk-button uk-button-default" type="submit">Отправить</button>
+                            </div>
+                        </form>
+                        <div class="confirm uk-text-center uk-child-width-1-1 uk-grid-small uk-width-1-2@s " uk-grid>
+                            <div uk-spinner id="p-loader" style="display: none;"></div>
+                            <div class="uk-alert-success" uk-alert id="p-alert" style="display: none;">
+                                <a class="uk-alert-close" uk-close></a>
+                                <p>Ваше сообщение отправлено!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+            var form = $('#p-form');
+            var loader = $('#p-loader');
+            var alert = $('#p-alert');
+
+            form.on('submit', function (e) {
+                e.preventDefault();
+                loader.fadeIn('fast');
+                var data = {
+                    'last_name': $('#id_last_name').val(),
+                    'first_name': $('#id_first_name').val(),
+                    'email': $('#id_email').val(),
+                    'phone_number': $('#id_phone_number').val(),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                };
+                $.ajax({
+                    url: '{% url 'client_app:to_partners' %}',
+                    method: 'POST',
+                    data: data,
+                    dataType: 'JSON',
+                    success: function (response) {
+                        if(response.success) {
+                            loader.fadeOut('fast', function () {
+                                alert.fadeIn('fast');
+                            });
+                        } else {
+                            loader.fadeOut('fast', function () {
+                                alert.removeClass('uk-alert-success').addClass('uk-alert-danger');
+                                alert.find('p').html(response.message);
+                                alert.fadeIn('fast');
+                            });
+                        }
+                    },
+                    error: function () {
+                        loader.fadeOut('fast', function () {
+                            alert.removeClass('uk-alert-success').addClass('uk-alert-danger');
+                            alert.find('p').html('Произошла неизвестная ошибка');
+                            alert.fadeIn('fast');
+                        });
+                    }
+                });
+            })
+        });
+    </script>
+{% endblock %}

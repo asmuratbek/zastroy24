@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Оплата{% endblock %}
+
+{% block content %}
+    <div class="uk-container uk-container-large uk-margin-medium-top">
+        <ul class="uk-breadcrumb uk-flex-middle uk-flex">
+            <li><a href="{% url 'client_app:index' %}"><span uk-icon="icon: home"></span></a></li>
+            <li><span>Оплата</span></li>
+        </ul>
+    </div>
+    <section class="left-menu uk-margin-medium-top">
+        <div class="uk-container uk-container-large">
+            <div class="uk-grid uk-grid-large" uk-grid>
+                <div class="uk-width-1-6@l uk-width-1-4@m">
+                    <div class="uk-box-shadow-hover-xlarge side-bar uk-card-default">
+                        {% include 'app/partial/static-pages-sidebar.html' %}
+                    </div>
+                </div>
+                <div class="uk-width-expand">
+                    <h1 class="title_border-left">оплата</h1>
+                    <div class="payment uk-box-shadow-hover-xlarge uk-padding uk-card-default">
+                        <h3>Общая информация</h3>
+                        <p>Отвечая на вопрос о взаимоотношении идеального ли и материального ци, Дай Чжень заявлял, что
+                            герменевтика порождает и обеспечивает напряженный даосизм, не учитывая мнения
+                            авторитетов.</p>
+
+                        <h3>Способы оплаты</h3>
+                        <div class="uk-grid number uk-child-width-auto@m" uk-grid>
+                            <div class="">
+                                <img src="{% static 'img/png/coure.png' %}" alt="" class="uk-margin-small-right">
+                                <b>Наличными курьеру</b>
+                            </div>
+                            <div class="">
+                                <img src="{% static 'img/png/wall.png' %}" alt="" class="uk-margin-small-right">
+                                <b>Денежный перевод</b>
+                            </div>
+                        </div>
+                        <h3>Условия оплаты</h3>
+                        <ul>
+                            <li>100-процентная предоплата товара</li>
+                            <li>100-процентная оплата водителю при доставке товара;</li>
+                            <li>100-процентная предоплата заказных позиций товара.</li>
+                            <li>Наличными водителю: оплата заказа осуществляется наличными средствами в рублях водителю
+                                при получении товара. Оплата товара производится до разгрузки.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

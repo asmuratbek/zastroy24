@@ -1,0 +1,35 @@
+{% load product_template_helpers %}
+{% for product in products %}
+    {% if paddings %}<div class="{{ paddings }}">{% endif %}
+    <div class="item-product-global grid-product" data-product-id="{{ product.id }}">
+        <div class="uk-card-small uk-position-relative uk-box-shadow-small uk-box-shadow-hover-large uk-card-default uk-card-body">
+            <div class="uk-card-badge uk-label">Артикул: <span>{{ product.article }}</span></div>
+            <div class="uk-cover-container uk-position-relative uk-height-small">
+                <img src="{{ product.main_image.url }}" alt="{{ product.title }}" uk-cover>
+            </div>
+            <h3 class="uk-card-title"><a href="{% url 'products:product_single' product_slug=product.slug %}">{{ product.title }}</a></h3>
+            <hr>
+            <h4>{% if product.get_price > 0 %}<span>от</span> {{ product.get_price }} <span>Руб./шт</span>{% else %}Цена по запросу{% endif %}</h4>
+            <div class="uk-text-center uk-margin-small-bottom products-grid-loader" style="display: none;">
+                <div uk-spinner></div>
+            </div>
+            <a href="#" class="uk-button uk-button-default uk-margin-bottom product-already-in-basket-trigger uk-display-block" {% if not abstract_basket|contains:product.id %}hidden{% endif %}>
+                <span class="uk-margin-small-right uk-icon" uk-icon="icon: check"></span>
+                В корзине
+            </a>
+            <a{% if abstract_basket|contains:product.id %} hidden{% endif %} class="uk-button uk-button-default uk-margin-bottom product-add-to-basket-trigger uk-display-block" data-id="{{ product.id }}" href="{% url 'orders:basket_add' p_slug=product.slug %}">
+                <span class="uk-margin-small-right uk-icon" uk-icon="icon: cart"></span>
+                В корзину
+            </a>
+            <div class="uk-text-center">
+                <label class="uk-display-block" style="cursor:pointer;">
+                    <input class="uk-checkbox to-comparison-trigger" type="checkbox" data-url="{% url 'orders:comparison_add_delete' p_slug=product.slug %}" {% if product.id in comparable %}checked{% endif %}>
+                    <span class="uk-margin-small-left" style="-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;">Сравнить</span>
+                </label>
+            </div>
+        </div>
+    </div>
+    {% if paddings %}</div>{% endif %}
+{% empty %}
+    <p>Товаров не найдено...</p>
+{% endfor %}

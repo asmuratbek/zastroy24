@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% load staticfiles widget_tweaks %}
+
+{% block title %}О компании{% endblock %}
+
+{% block content %}
+    <div class="uk-container uk-container-large uk-margin-medium-top">
+        <ul class="uk-breadcrumb uk-flex-middle uk-flex">
+            <li><a href="{% url 'client_app:index' %}"><span uk-icon="icon: home"></span></a></li>
+            <li><span>О компании</span></li>
+        </ul>
+    </div>
+    <section class="left-menu uk-margin-medium-top">
+        <div class="uk-container uk-container-large">
+            <div class="uk-grid uk-grid-large" uk-grid>
+                <div class="uk-width-1-6@l uk-width-1-4@m">
+                    <div class="uk-box-shadow-hover-xlarge side-bar uk-card-default">
+                        {% include 'app/partial/static-pages-sidebar.html' %}
+                    </div>
+                </div>
+                <div class="uk-width-expand">
+                    <h1 class="title_border-left">О компании</h1>
+                    <div class="about-company uk-box-shadow-hover-xlarge uk-padding uk-card-default">
+                        <h3>О нас</h3>
+                        {{ content.body|safe }}
+                        <h3>Мы в цифрах</h3>
+                        <div class="uk-grid number uk-child-width-1-5@m" uk-grid>
+                            {% for numbers in content.about_in_numbers.all %}
+                                <div class="uk-text-center">
+                                    <h3>{{ numbers.number }}</h3>
+                                    <p>{{ numbers.key }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <h3>Наша команда</h3>
+                        <div class="our_team">
+                            <div class="uk-grid uk-child-width-1-2@m" uk-grid>
+                                {% for man in content.team.all %}
+                                    <div class="item">
+                                        <div class="img-wrapper">
+                                            <img src="{{ man.image.url }}" alt="{{ man.full_name }}">
+                                        </div>
+                                        <div class="text-field">
+                                            <h4>{{ man.profession }}</h4>
+                                            <h3>{{ man.full_name }}</h3>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

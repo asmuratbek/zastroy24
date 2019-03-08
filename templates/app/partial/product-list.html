@@ -1,0 +1,38 @@
+{% load product_template_helpers %}
+{% for product in products %}
+    <div class="item">
+        <div class="uk-card-small uk-position-relative uk-box-shadow-small uk-box-shadow-hover-large uk-card-default uk-card-body">
+            <div class="uk-card-badge uk-label">Артикул: <span>107424</span></div>
+            <div class="uk-cover-container uk-position-relative uk-height-large">
+                <img src="{{ product.main_image.url }}" alt="" uk-cover>
+            </div>
+            <h3 class="uk-card-title">{{ product.title }}</h3>
+            <hr>
+            <div class="uk-grid uk-flex-middle uk-child-width-1-3@m">
+                <div><h4><span>от</span> {{ product.get_price }} <span>Cом/шт</span></h4></div>
+                <div>
+                    <div class="uk-text-center uk-margin-small-bottom">
+                        <div uk-spinner></div>
+                    </div>
+                    <a class="uk-button uk-button-default  uk-display-block" href=""><span
+                            class="uk-margin-small-right uk-icon"
+                            uk-icon="icon: cart"></span>В корзину</a>
+                </div>
+                <div>
+                    <form action="" class="uk-text-center">
+                        <div class="">
+                            <label class="uk-display-block"><input class="uk-checkbox"
+                                                                   type="checkbox" checked>
+                                <button type="submit" class="uk-margin-small-left">
+                                    Сравнить
+                                </button>
+                            </label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% empty %}
+    <p>Товаров не найдено...</p>
+{% endfor %}

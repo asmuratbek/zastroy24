@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% load staticfiles widget_tweaks %}
+
+{% block title %}Оформление товаров{% endblock %}
+
+{% block content %}
+    <div class="uk-container uk-container-large uk-margin-medium-top">
+        <ul class="uk-breadcrumb uk-flex-middle uk-flex">
+            <li><a href="{% url 'client_app:index' %}"><span uk-icon="icon: home"></span></a></li>
+            <li><a href="{% url 'orders:basket_list' %}">Корзина</a></li>
+            <li><span>Оформление</span></li>
+        </ul>
+    </div>
+    <section class="best_promotions uk-margin-medium-top">
+        <div class="uk-container uk-container-large">
+            <div class="uk-container uk-container-large">
+                <h2 class="title_border-left">
+                    Оформление корзины
+                </h2>
+
+                {% if success == True %}
+                    <!--success-->
+                    <div class="uk-alert-success" uk-alert id="s-success-alert">
+                        <a class="uk-alert-close" uk-close></a>
+                        <p>Заказ оформлен! С вами свяжутся наши операторы! <span class="" uk-icon="icon: happy"></span></p>
+                    </div>
+                {% elif success == False %}
+                    <!--error-->
+                    <div class="uk-alert-danger" uk-alert id="s-error-alert">
+                        <a class="uk-alert-close" uk-close></a>
+                        <p>Ошибка! <span class="" uk-icon="icon: warning"></span></p>
+                        <p>{{ error }}</p>
+                    </div>
+                {% endif %}
+                <form method="POST">
+                    {% csrf_token %}
+                    <fieldset class="uk-fieldset">
+                        <div class="uk-margin">
+                            {% render_field form.name class='uk-input' placeholder='Имя' %}
+                        </div>
+                        <div class="uk-margin">
+                            {% render_field form.email class='uk-input' type='email' placeholder='Почта' %}
+                        </div>
+                        <div class="uk-margin">
+                            {% render_field form.phone class='uk-input' placeholder='Телефон' %}
+                        </div>
+                        <div class="uk-margin">
+                            {% render_field form.address class='uk-input' placeholder='Адрес доставки' %}
+                        </div>
+                        <button class="uk-button uk-button-default" type="submit">Отправить</button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </section>
+{% endblock %}

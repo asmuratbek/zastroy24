@@ -1,0 +1,24 @@
+{
+  "name": "Mybrand",
+  "version": "1.0.1",
+  "description": "Mybrand page",
+  "repository": {
+    "type": "",
+    "url": ""
+  },
+  "dependencies": {
+    "browser-sync": "^2.2.3",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^4.1.0",
+    "gulp-imagemin": "^4.1.0",
+    "gulp-minify-css": "^1.0.0",
+    "gulp-rigger": "^0.5.8",
+    "gulp-sass": "^3",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-uglify": "^3.0.0",
+    "gulp-watch": "^5.0.0",
+    "imagemin-pngquant": "^5.0.1",
+    "jquery.kinetic": "2.2.4",
+    "rimraf": "^2.3.1"
+  }
+}

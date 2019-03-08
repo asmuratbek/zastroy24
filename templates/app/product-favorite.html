@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Ausgewählte Produkte{% endblock %}
+
+{% block content %}
+    <section class="slick-fade-carousel">
+        <div class="item">
+            <img src="{% static 'img/slider1.jpg' %}" alt="">
+        </div>
+        <div class="item">
+            <img src="{% static 'img/slider2.jpg' %}" alt="">
+        </div>
+        <div class="item">
+            <img src="{% static 'img/slider1.jpg' %}" alt="">
+        </div>
+    </section>
+
+
+    <section class="bg-breadcrumb">
+        <div class="uk-container">
+            <ul class="uk-breadcrumb">
+                <li><a href="{% url 'client_app:index' %}">Hauptseite</a></li>
+                <li><span>Ausgewählte Produkte</span></li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="product-item">
+        <div class="uk-container">
+            <h3 class="title">Ihre Favoriten:</h3>
+            <div class="uk-grid uk-grid-small uk-margin-remove">
+                <div class="uk-width-1-1@l">
+
+                    <div class="uk-child-width-1-4@m uk-grid-small" uk-grid>
+                        {% include 'app/partial/products.html' %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

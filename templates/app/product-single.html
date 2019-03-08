@@ -1,0 +1,413 @@
+{% extends 'base.html' %}
+
+{% load staticfiles client_helper product_template_helpers widget_tweaks %}
+
+{% block meta %}
+    <meta name="og:title" content="{{ product.title }}">
+    <meta name="og:description" content="{{ product.description|clean_html }}">
+    <meta name="og:image" content="{{ product.main_image.url }}">
+{% endblock %}
+
+{% block title %}{{ product.title }}{% endblock %}
+
+{% block content %}
+    <div class="uk-container uk-container-large uk-margin-medium-top">
+        <ul class="uk-breadcrumb uk-flex-middle uk-flex">
+            <li><a href="{% url 'client_app:index' %}"><span uk-icon="icon: home"></span></a></li>
+            {% if product.category.parent_category.parent_category %}
+            <li><a href="{% url 'categories:parent_category' category_slug=product.category.parent_category.parent_category.slug %}">{{ product.category.parent_category.parent_category.title }}</a></li>
+            <li><a href="{% url 'categories:second_level_category' category_slug=product.category.parent_category.parent_category.slug second_category_slug=product.category.parent_category.slug %}">{{ product.category.parent_category.title }}</a></li>
+            <li><a href="{% url 'categories:third_level_category' category_slug=product.category.parent_category.parent_category.slug second_category_slug=product.category.parent_category.slug third_category_slug=product.category.slug %}">{{ product.category.title }}</a></li>
+            {% else %}
+            <li><a href="{% url 'categories:parent_category' category_slug=product.category.parent_category.slug %}">{{ product.category.parent_category.title }}</a></li>
+            <li><a href="{% url 'categories:parent_category' category_slug=product.category.slug %}">{{ product.category.title }}</a></li>
+            {% endif %}
+            <li><span>{{ product.title }}</span></li>
+        </ul>
+    </div>
+    <section class="single_product uk-margin-medium-top">
+        <div class="uk-container uk-container-large">
+            <div class="uk-box-shadow-hover-xlarge uk-padding uk-card-default">
+                <div class=" uk-grid-collapse uk-margin-remove " uk-grid>
+                    <div class="uk-width-1-3@m">
+                        <div class="slider-for">
+                            {% for slide in product.product_image.all %}
+                                <div>
+                                    <img src="{{ slide.image|get_wt_image_url }}" class="uk-margin-auto" alt="">
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="slider-nav uk-visible@m">
+                            {% for slide in product.product_image.all %}
+                                <div>
+                                    <img src="{{ slide.image|get_wt_image_url }}" class="uk-margin-auto" alt="">
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="uk-width-expand@m uk-padding info_product">
+                        <div class="uk-label">Артикул: <span>{{ product.article }}</span></div>
+                        <div class="title">
+                            <h1>{{ product.title }}</h1>
+                        </div>
+                        <div class="goods">
+                            {% if product.is_available %}
+                                <div class="stock"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Товар в наличии</div>
+                            {% else %}
+                                <div class="not-stock"><i class="fa fa-times-circle-o" aria-hidden="true"></i> Товара нет в наличии</div>
+                            {% endif %}
+                        </div>
+                        <form class="check">
+                            <label class="uk-display-block">
+                                <input class="uk-checkbox to-comparison-trigger" type="checkbox" data-url="{% url 'orders:comparison_add_delete' p_slug=product.slug %}" {% if product.id in comparable %}checked{% endif %}>
+                                <span type="submit" class="">Сравнить</span>
+                            </label>
+                        </form>
+                        <hr>
+                        <h4>Цена: {% if product.get_price > 0 %}<span class="price" id="main-price">{{ product.get_price }}</span> <span class="item">/ шт</span>{% else %}Цена по запросу{% endif %}</h4>
+                        <form class="decrease_increase">
+                            <fieldset>
+                                <div class="uk-border uk-float-left">
+                                    <input type="button" value="-" class="decrease"/>
+                                    <input type="text" id="increase_decrease" value="{% if abstract_basket|contains:product.id %}{% with abstract_basket|get_basket_item:product.id as basket_item %}{{ basket_item.count }}{% endwith %}{% else %}1{% endif %}" placeholder="0"/>
+                                    <input type="button" value="+" class="increase"/>
+                                </div>
+                                <button data-href="{% url 'orders:add_count' b_id=abstract_basket|get_basket_id:product.id %}" class="uk-button-default uk-button"{% if not abstract_basket|contains:product.id %} style="display: none;"{% endif %} id="update-basket-item-count">
+                                    <span class="uk-icon uk-margin-small-right" uk-icon="icon: cart; ratio: 1"></span>
+                                    Обновить
+                                </button>
+                                <div uk-spinner style="display: none;" id="product-loader" class="uk-margin-top uk-margin-large-left"></div>
+                                <button class="uk-button-default uk-button"{% if abstract_basket|contains:product.id %} style="display: none;"{% endif %} id="add-to-basket" data-href="{% url 'orders:basket_add' p_slug=product.slug %}">
+                                    <span class="uk-icon uk-margin-small-right" uk-icon="icon: cart;  ratio: 1"></span>
+                                    В корзину
+                                </button>
+                            </fieldset>
+                        </form>
+                        <div class="one-click">
+                            <a href="#modal-order-in-one-click" class="uk-button-default uk-button" uk-toggle>Купить в 1 клик</a>
+                        </div>
+                        <div class="pay uk-grid-collapse uk-grid uk-width-2-3@m uk-child-width-auto@m">
+                            <div>
+                                <div class="bg"><a href="{% url 'client_app:payments_info' %}"><img src="{% static 'img/png/wallet.png' %}" class="uk-margin-small-right"
+                                                                alt="">Способы оплаты</a></div>
+                            </div>
+                            <div>
+                                <div class="bg"><a href="{% url 'client_app:delivery_info' %}"><img src="{% static 'img/png/deli.png' %}" class="uk-margin-small-right"
+                                                                alt="">Условие доставки</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="characteristics uk-box-shadow-hover-xlarge uk-padding uk-card-default">
+                <ul class="uk-subnav uk-subnav-pill uk-margin-remove uk-grid uk-child-width-1-3@m" uk-grid
+                    uk-switcher="animation: uk-animation-fade">
+                    <li class="uk-padding-remove uk-text-center"><a href="#">ХАРАКТЕРИСТИКИ</a></li>
+                    <li class="uk-padding-remove uk-text-center"><a href="#">ОПИСАНИЕ</a></li>
+                    <li class="uk-padding-remove uk-text-center"><a href="#">ДОКУМЕНТАЦИЯ</a></li>
+                </ul>
+
+                <ul class="uk-switcher uk-margin">
+                    <li class="text_characteristics">
+                        <div class="uk-grid uk-width-2-3@m uk-child-width-1-1 uk-margin-auto" uk-grid>
+                            <div>
+                                <h4>Основные характеристики</h4>
+                            </div>
+                            <div class="uk-grid-small" uk-grid>
+                                <div class="uk-width-expand" uk-leader>БРЕНД</div>
+                                <div>{{ product.brand.title }}</div>
+                            </div>
+                            {% for property in product.property.all %}
+                                <div class="uk-grid-small" uk-grid>
+                                    <div class="uk-width-expand" uk-leader>
+                                        {{ property.key.title|upper }}
+                                        {% if property.prop_tip %}
+                                            <span class="uk-margin-small-left icon-question" uk-icon="icon: question"
+                                            title="{{ property.prop_tip }}" uk-tooltip></span>
+                                        {% endif %}
+                                    </div>
+                                    <div>{{ property.value }}{% if property.value_type %} {{ property.value_type }}{% endif %}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                    </li>
+                    <li>
+                        <div class="uk-grid uk-width-2-3@m  uk-margin-auto" uk-grid>
+                            {{ product.description|safe }}
+                        </div>
+                    </li>
+                    <li>
+                        <div class="uk-grid uk-width-2-3@m  uk-margin-auto" uk-grid>
+                            {{ product.documentation|safe }}
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    {% if suggested_products %}
+        <section class="recommendations uk-margin-medium-top">
+            <div class="uk-container uk-container-large">
+                <h2 class="title_border-left">рекомендуем также</h2>
+                <div class="slider-product">
+                    {% include 'app/partial/products.html' with products=suggested_products paddings='uk-padding-small-left' %}
+                </div>
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}
+
+
+{% block feedback_modal %}
+    <div id="modal-order-in-one-click" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <h2 class="uk-modal-title">Обратная связь</h2>
+            <p>Наш консультант ответит на ваши интересующие вопросы</p>
+            <form method="POST" id="order-in-one-click-form">
+                <fieldset class="uk-fieldset">
+                    {% csrf_token %}
+                    {% render_field form.count type='hidden' id='modal-count' %}
+                    <div class="uk-margin">
+                        {% render_field form.name class='uk-input' placeholder='Фамилия Имя отчество' %}
+                    </div>
+                    <div class="uk-margin">
+                        {% render_field form.phone class='uk-input' placeholder='+7-XXX-XXX-XX-XX' %}
+                    </div>
+                    <div class="uk-margin">
+                        {% render_field form.email class='uk-input' type='email' placeholder='E-Mail' %}
+                    </div>
+                    <div class="uk-margin">
+                        {% render_field form.comment placeholder='Комментарий' rows='5' %}
+                    </div>
+                    <div class="uk-margin">
+                        <label class="uk-display-block">
+                            <input class="uk-checkbox" type="checkbox" id="modal-agree">
+                            <span type="submit" class="">Согласен с обработкой моих данных</span>
+                        </label>
+                    </div>
+                    <div class="uk-margin">
+                        <b>Итого</b>: <span id="modal-price">{{ product.get_price }}</span> руб.
+                    </div>
+                    <div class="uk-text-center" id="order-in-one-click-loading-effect" style="display: none;">
+                        <div uk-spinner></div>
+                    </div>
+                    <button class="uk-button uk-button-default" disabled type="submit">Отправить</button>
+                    <div class="modal-error-messages"></div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            var updateBasketCount = $('#update-basket-item-count');
+            var count = $('#increase_decrease');
+            var _loader = $('#product-loader');
+            var addToBasketButton = $('#add-to-basket');
+            var increase = count.parent().find('.increase');
+            var decrease = count.parent().find('.decrease');
+
+            increase.on('click', function (e) {
+                e.preventDefault();
+                var val = count.val();
+                val++;
+                count.val(val);
+                count.trigger('change');
+            });
+
+            decrease.on('click', function (e) {
+                e.preventDefault();
+                var val = count.val();
+                if (val > 0)
+                    val--;
+                count.val(val);
+                count.trigger('change');
+            });
+
+            count.on('change', function () {
+                var mainPrice = $('#main-price');
+                var result = parseFloat(mainPrice.html()) * parseInt($(this).val());
+                $('#modal-price').html(result);
+                $('#modal-count').val($(this).val());
+            });
+
+            updateBasketCount.on('click', function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                $.ajax({
+                    url: $this.attr('data-href'),
+                    method: 'POST',
+                    dataType: 'JSON',
+                    data: {
+                        'count': count.val(),
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        if(response.success) {
+                            UIkit.notification({
+                                message: response.message,
+                                pos: 'top-right',
+                                status: 'success',
+                                timeout: 5000
+                            });
+
+                        } else {
+                            UIkit.notification({
+                                message: response.message,
+                                pos: 'top-right',
+                                status: 'danger',
+                                timeout: 5000
+                            });
+                        }
+                    },
+                    error: function () {
+                        UIkit.notification({
+                            message: 'Произогшла неизвестная ошибка',
+                            pos: 'top-right',
+                            status: 'danger',
+                            timeout: 5000
+                        });
+                    }
+                });
+            });
+
+            addToBasketButton.on('click', function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                $this.fadeOut('fast', function () {
+                    _loader.fadeIn('slow', function () {
+                        $.ajax({
+                            url: $this.attr('data-href'),
+                            method: 'POST',
+                            dataType: 'JSON',
+                            data: {
+                                'count': count.val(),
+                                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                            },
+                            success: function (response) {
+                                if(response.success) {
+                                    _loader.fadeOut('fast', function () {
+                                        updateBasketCount.fadeIn('fast');
+                                        $this.remove();
+                                    });
+                                    if(response.is_new) {
+                                        var a = $('#abstract-basket-count');
+                                        var val = parseInt(a.html());
+                                        val++;
+                                        a.html(val);
+                                    }
+                                    UIkit.notification({
+                                        message: response.message,
+                                        status: 'success',
+                                        pos: 'top-right',
+                                        timeout: 5000
+                                    });
+                                } else {
+                                    _loader.fadeOut('slow', function () {
+                                        $this.fadeIn('fast');
+                                    });
+                                    UIkit.notification({
+                                        message: response.message,
+                                        status: 'danger',
+                                        pos: 'top-right',
+                                        timeout: 5000
+                                    });
+                                }
+                            },
+                            error: function () {
+                                _loader.fadeOut('slow', function () {
+                                    $this.fadeIn('fast');
+                                });
+                                UIkit.notification({
+                                    message: 'Произошла неизвестная ошибка',
+                                    status: 'danger',
+                                    pos: 'top-right',
+                                    timeout: 5000
+                                });
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            var form = $('#order-in-one-click-form');
+            var toggle = $('#modal-agree');
+
+            toggle.on('change', function () {
+                var $this = $(this);
+                if($this.prop('checked')) {
+                    $(form).find('button[type=submit]').removeAttr('disabled').toggleClass('uk-button-default uk-button-primary')
+                } else {
+                    $(form).find('button[type=submit]').attr('disabled', true).toggleClass('uk-button-primary uk-button-default')
+                }
+            });
+
+            form.on('submit', function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                var button = $(this).find('button[type=submit]');
+                var loader = $(this).find('#order-in-one-click-loading-effect');
+                button.fadeOut('fast', function () {
+                    loader.fadeIn();
+                    var data = {
+                        name: $this.find('input[name="name"]').val(),
+                        phone: $this.find('input[name="phone"]').val(),
+                        email: $this.find('input[name="email"]').val(),
+                        comment: $this.find('textarea').val(),
+                        count: $this.find('input[name="count"]').val(),
+                        csrfmiddlewaretoken: $this.find('input[name="csrfmiddlewaretoken"]').val()
+                    };
+                    console.log(data);
+                    $.ajax({
+                        url: '{% url 'products:buy_on_one_click' slug=product.slug %}',
+                        method: 'POST',
+                        dataType: 'JSON',
+                        data: data,
+                        success: function (response) {
+                            loader.fadeOut('fast', function () {
+                                button.fadeIn('fast');
+                            });
+
+                            if(response.success) {
+                                UIkit.modal($('#modal-order-in-one-click')).hide();
+                                UIkit.notification({
+                                    message: response.message,
+                                    pos: 'top-right',
+                                    status: 'success',
+                                    timeout: 5000
+                                });
+                            } else {
+                                $('#modal-error-messages').html(response.message);
+                            }
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+{% endblock %}

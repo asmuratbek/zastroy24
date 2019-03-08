@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Anmelden{% endblock %}
+
+
+{% block content %}
+    {% if messages %}
+        <div>
+            {% for m in messages %}
+                {{ m }}<br>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <section class="enter-form">
+    {% csrf_token %}
+        <div class="uk-container">
+            <div class="uk-grid uk-grid-small uk-margin-remove uk-child-width-1-2@l">
+                <div class="uk-margin-medium-bottom">
+                    <form>
+                        <legend class="uk-legend">Зарегистрируйтесь</legend>
+{#                        <div class="uk-margin">#}
+{#                            <label class="uk-form-label uk-display-block">Имя </label>#}
+{#                            <div class="uk-inline uk-display-block">#}
+{#                                <span class="uk-form-icon" uk-icon="icon: user"></span>#}
+{#                                <input class="uk-input " name="email" type="text">#}
+{#                            </div>#}
+{#                        </div>#}
+                        <div class="uk-margin">
+                            <label class="uk-form-label uk-display-block">EMAIL <span>*</span></label>
+                            <div class="uk-inline uk-display-block">
+                                <span class="uk-form-icon" uk-icon="icon: mail"></span>
+                                <input class="uk-input" name="email" type="password">
+                            </div>
+                        </div>
+                        <div class="uk-margin">
+                            <label class="uk-form-label uk-display-block">Пароль <span>*</span></label>
+                            <div class="uk-inline uk-display-block">
+                                <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                                <input class="uk-input" name="password2" type="password">
+                            </div>
+                        </div>
+                        <div class="uk-margin">
+                            <label class="uk-form-label uk-display-block">Подтвердить пароль <span>*</span></label>
+                            <div class="uk-inline uk-display-block">
+                                <span class="uk-form-icon" uk-icon="icon: phone"></span>
+                                <input class="uk-input  " type="text">
+                            </div>
+                        </div>
+{#                        <div class="uk-margin">#}
+{#                            <label class="uk-form-label uk-display-block">Адрес </label>#}
+{#                            <div class="uk-inline uk-display-block">#}
+{#                                <span class="uk-form-icon" uk-icon="icon: home"></span>#}
+{#                                <input class="uk-input  " type="text">#}
+{#                            </div>#}
+{#                        </div>#}
+                        <button class="uk-button uk-button-default" type="submit">Зарегистрироваться</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+{#    <form method="POST">#}
+{#        {% csrf_token %}#}
+{#        <p>#}
+{#            {{ form.email.label_tag }}#}
+{#            {{ form.email }}#}
+{#        </p>#}
+{#        <p>#}
+{#            {{ form.password1.label_tag }}#}
+{#            {{ form.password1 }}#}
+{#        </p>#}
+{#        <p>#}
+{#            {{ form.password2.label_tag }}#}
+{#            {{ form.password2 }}#}
+{#        </p>#}
+{#        <p>#}
+{#            <button type="submit">Anmelden</button>#}
+{#        </p>#}
+{#    </form>#}
+{% endblock %}

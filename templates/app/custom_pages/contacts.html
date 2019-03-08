@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% load staticfiles widget_tweaks %}
+
+{% block title %}Контакты{% endblock %}
+
+{% block css %}
+    <style>
+        .affiliate-location-map {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="uk-container uk-container-large uk-margin-medium-top">
+        <ul class="uk-breadcrumb uk-flex-middle uk-flex">
+            <li><a href="{% url 'client_app:index' %}"><span uk-icon="icon: home"></span></a></li>
+            <li><span>Контакты</span></li>
+        </ul>
+    </div>
+    <section class="left-menu uk-margin-medium-top">
+        <div class="uk-container uk-container-large">
+            <div class="uk-grid uk-grid-large" uk-grid>
+                <div class="uk-width-1-6@l uk-width-1-4@m">
+                    <div class="uk-box-shadow-hover-xlarge side-bar uk-card-default">
+                        {% include 'app/partial/static-pages-sidebar.html' %}
+                    </div>
+                </div>
+                <div class="uk-width-expand">
+                    <h1 class="title_border-left">Контакты</h1>
+                    {% for item in affiliates %}
+                        <div class="contact uk-box-shadow-hover-xlarge uk-padding uk-card-default">
+                            <div class="uk-grid uk-child-width-1-2@m" uk-grid>
+                                <div>
+                                    <h2>{{ item.title }}</h2>
+                                    <ul>
+                                        <li><img src="{% static 'img/png/q1.png' %}" alt="">{{ item.address }}</li>
+                                        <li><img src="{% static 'img/png/q2.png' %}" alt="">{{ item.phone }}</li>
+                                        <li><img src="{% static 'img/png/q3.png' %}" alt=""><a href="mailto:{{ item.email }}">{{ item.email }}</a></li>
+                                    </ul>
+                                    <button class="uk-button uk-button-default open-feedback-modal" uk-toggle="target: #modal-affiliate-call-back" data-id="{{ item.id }}">Обратная связь</button>
+                                </div>
+                                <div>
+                                    <div
+                                            class="affiliate-location-map"
+                                            data-longitude="{{ item.location.longitude }}"
+                                            data-latitude="{{ item.location.latitude }}"
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="uk-divider-icon">
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block feedback_modal %}
+    <div id="modal-affiliate-call-back" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <h2 class="uk-modal-title">Обратная связь</h2>
+            <p>Наш консультант ответит на ваши интересующие вопросы</p>
+            <form id="feedback-form">
+                <fieldset class="uk-fieldset">
+                    <div class="uk-margin">
+                        {% render_field feedback_form.first_name class='uk-input' placeholder='Имя' %}
+                    </div>
+                    <div class="uk-margin">
+                        {% render_field feedback_form.last_name class='uk-input' placeholder='Фамилия' %}
+                    </div>
+                    <div class="uk-margin">
+                        {% render_field feedback_form.phone_number class='uk-input' placeholder='Телефон' %}
+                    </div>
+                    <input type="hidden" name="affiliate" id="id_affiliate">
+                    <button class="uk-button uk-button-default" type="submit">Отправить</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHFQIQAbbG3k34jXG-reyvJ8YUyCSIYO0&callback=initAllMaps"></script>
+    <script>
+        function initAllMaps() {
+            var affiliates = $('.affiliate-location-map');
+
+            affiliates.each(function () {
+                var $this = $(this);
+                if( $this.attr('data-longitude') !== '' && $this.attr('data-latitude') !== '' ) {
+                    var map = new google.maps.Map($this[0], {
+                        center: {
+                            lat: parseFloat($this.attr('data-latitude').replace(',', '.')),
+                            lng: parseFloat($this.attr('data-longitude').replace(',', '.'))
+                        },
+                        zoom: 13,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    });
+
+                    var marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(parseFloat($this.attr('data-latitude').replace(',', '.')), parseFloat($this.attr('data-longitude').replace(',', '.'))),
+                        map: map
+                    });
+                }
+
+            });
+        }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            var buttons = $('.open-feedback-modal');
+
+            buttons.each(function () {
+                var $this = $(this);
+                $this.on('click', function (e) {
+                    $('#id_affiliate').val($this.attr('data-id'));
+                });
+            });
+
+            var form = $('#feedback-form');
+
+            form.on('submit', function (e) {
+                e.preventDefault();
+
+                var data = {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'first_name': $('#id_first_name').val(),
+                    'last_name': $('#id_last_name').val(),
+                    'phone_number': $('#id_phone_number').val(),
+                    'affiliate': $('#id_affiliate').val()
+                };
+
+                $.ajax({
+                    url: '{% url 'client_app:contacts' %}',
+                    method: 'POST',
+                    dataType: 'JSON',
+                    data: data,
+                    success: function (response) {
+                        if(response.success) {
+                            UIkit.modal($('#modal-affiliate-call-back')).hide();
+                            UIkit.notification({
+                                message: response.message,
+                                status: 'success',
+                                pos: 'top-right',
+                                timeout: 5000
+                            });
+                        } else {
+                            UIkit.notification({
+                                message: response.message,
+                                status: 'danger',
+                                pos: 'top-right',
+                                timeout: 5000
+                            });
+                        }
+                    },
+                    error: function () {
+                        UIkit.notification({
+                            message: 'Произошла неизвестная ошибка! Попробуйте позже!',
+                            status: 'danger',
+                            pos: 'top-right',
+                            timeout: 5000
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

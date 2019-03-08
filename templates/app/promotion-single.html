@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+
+{% load staticfiles product_template_helpers %}
+
+{% block title %}Акция! {{ promotion.title }}{% endblock %}
+
+{% block content %}
+    <div class="uk-container uk-container-large uk-margin-medium-top">
+        <ul class="uk-breadcrumb uk-flex-middle uk-flex">
+            <li><a href="{% url 'client_app:index' %}"><span uk-icon="icon: home"></span></a></li>
+            <li><a href="{% url 'promotions:list' %}">Акции</a></li>
+            <li><span>{{ promotion.title }}</span></li>
+        </ul>
+    </div>
+    <section class="single_best_promotions uk-margin-medium-top">
+        <div class="uk-container uk-container-large">
+            <div class="uk-width-1-1 uk-margin-remove uk-box-shadow-hover-xlarge uk-padding uk-card-default" uk-grid>
+                <div class="uk-width-1-3@m uk-cover-container">
+                    <img src="{{ promotion.product.main_image.url }}" alt="{{ promotion.product.title }}" uk-cover>
+                    <canvas width="600" height="400"></canvas>
+                </div>
+                <div class="uk-width-expand@m ">
+                    <div class="">
+                        <div class=" uk-overlay uk-display-inline-block uk-overlay-default">
+                            {% if promotion.expires_date %}
+                                <span uk-icon="icon: calendar" class="uk-margin-small-right"></span>
+                                Акция действует до {{ promotion.expires_date|date:"d M Y года" }}
+                            {% else %}
+                                Акция!
+                                {% if promotion.product.is_stock %}
+                                    -{{ promotion.product.discount }}%
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        <div class="title">
+                            <h1>{{ promotion.title }}</h1>
+                        </div>
+                        <div class="">
+                            <h3 class="uk-legend">
+                                <a href="{% url 'products:product_single' product_slug=promotion.product.slug %}">
+                                    {{ promotion.product.title }}
+                                </a>
+                            </h3>
+                        </div>
+                        {% if promotion.product.is_stock %}
+                            <strike>
+                                Старая цена: {{ promotion.product.price }} / шт
+                            </strike>
+                            <p class="uk-margin-remove">
+                               Скидка: {{ promotion.product.discount }}%
+                            </p>
+                            <h4>Новая цена: <span class="price">{{ promotion.product.get_price }}</span> <span class="item">/ шт</span></h4>
+                        {% else %}
+                        <h4>Цена: <span class="price">{{ promotion.product.get_price }}</span> <span class="item">/ шт</span></h4>
+                        {% endif %}
+                        <form>
+                            <fieldset>
+                                <div class="uk-border uk-float-left">
+                                    <input type="button" value="-" class="decrease"/>
+                                    <input type="text" id="increase_decrease" value="{% if abstract_basket|contains:promotion.product.id %}{% with abstract_basket|get_basket_item:promotion.product.id as basket_item %}{{ basket_item.count }}{% endwith %}{% else %}0{% endif %}" placeholder="0"/>
+                                    <input type="button" value="+" class="increase"/>
+                                </div>
+                                <button data-href="{% url 'orders:add_count' b_id=abstract_basket|get_basket_id:promotion.product.id %}" class="uk-button-default uk-button"{% if not abstract_basket|contains:promotion.product.id %} style="display: none;"{% endif %} id="update-basket-item-count">
+                                    <span class="uk-icon uk-margin-small-right" uk-icon="icon: cart; ratio: 1"></span>
+                                    Обновить
+                                </button>
+                                <div uk-spinner style="display: none;" id="product-loader" class="uk-margin-top uk-margin-large-left"></div>
+                                <button class="uk-button-default uk-button"{% if abstract_basket|contains:promotion.product.id %} style="display: none;"{% endif %} id="add-to-basket" data-href="{% url 'orders:basket_add' p_slug=promotion.product.slug %}">
+                                    <span class="uk-icon uk-margin-small-right" uk-icon="icon: cart;  ratio: 1"></span>
+                                    В корзину
+                                </button>
+                            </fieldset>
+                        </form>
+                        {{ promotion.description|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            var updateBasketCount = $('#update-basket-item-count');
+            var count = $('#increase_decrease');
+            var _loader = $('#product-loader');
+            var addToBasketButton = $('#add-to-basket');
+            var increase = count.parent().find('.increase');
+            var decrease = count.parent().find('.decrease');
+
+            increase.on('click', function (e) {
+                e.preventDefault();
+                var val = count.val();
+                val++;
+                count.val(val);
+                count.trigger('change');
+            });
+
+            decrease.on('click', function (e) {
+                e.preventDefault();
+                var val = count.val();
+                if (val > 0)
+                    val--;
+                count.val(val);
+                count.trigger('change');
+            });
+
+            updateBasketCount.on('click', function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                $.ajax({
+                    url: $this.attr('data-href'),
+                    method: 'POST',
+                    dataType: 'JSON',
+                    data: {
+                        'count': count.val(),
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        if(response.success) {
+                            UIkit.notification({
+                                message: response.message,
+                                pos: 'top-right',
+                                status: 'success',
+                                timeout: 5000
+                            });
+
+                        } else {
+                            UIkit.notification({
+                                message: response.message,
+                                pos: 'top-right',
+                                status: 'danger',
+                                timeout: 5000
+                            });
+                        }
+                    },
+                    error: function () {
+                        UIkit.notification({
+                            message: 'Произогшла неизвестная ошибка',
+                            pos: 'top-right',
+                            status: 'danger',
+                            timeout: 5000
+                        });
+                    }
+                });
+            });
+
+            addToBasketButton.on('click', function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                $this.fadeOut('fast', function () {
+                    _loader.fadeIn('slow', function () {
+                        $.ajax({
+                            url: $this.attr('data-href'),
+                            method: 'POST',
+                            dataType: 'JSON',
+                            data: {
+                                'count': count.val(),
+                                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                            },
+                            success: function (response) {
+                                if(response.success) {
+                                    _loader.fadeOut('fast', function () {
+                                        updateBasketCount.fadeIn('fast');
+                                        $this.remove();
+                                    });
+                                    if(response.is_new) {
+                                        var a = $('#abstract-basket-count');
+                                        var val = parseInt(a.html());
+                                        val++;
+                                        a.html(val);
+                                    }
+                                    UIkit.notification({
+                                        message: response.message,
+                                        status: 'success',
+                                        pos: 'top-right',
+                                        timeout: 5000
+                                    });
+                                } else {
+                                    _loader.fadeOut('slow', function () {
+                                        $this.fadeIn('fast');
+                                    });
+                                    UIkit.notification({
+                                        message: response.message,
+                                        status: 'danger',
+                                        pos: 'top-right',
+                                        timeout: 5000
+                                    });
+                                }
+                            },
+                            error: function () {
+                                _loader.fadeOut('slow', function () {
+                                    $this.fadeIn('fast');
+                                });
+                                UIkit.notification({
+                                    message: 'Произошла неизвестная ошибка',
+                                    status: 'danger',
+                                    pos: 'top-right',
+                                    timeout: 5000
+                                });
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    </script>
+{% endblock %}

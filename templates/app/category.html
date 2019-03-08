@@ -1,0 +1,369 @@
+{% extends 'base.html' %}
+
+{% load staticfiles categories_helper client_helper product_template_helpers %}
+
+{% block title %}Категория {{ category.title }}{% endblock %}
+
+{% block meta %}
+    {% if level == 'parent' %}
+        <meta name="og:title" content="{{ category.title }}">
+        <meta name="og:description" content="{{ category.description|clean_html }}">
+        {% if category.seo_thumbnail %}
+            <meta name="og:image" content="http://{{ request.get_host }}{{ category.seo_thumbnail.url }}">
+        {% endif %}
+    {% elif level == 'second' %}
+        {% with category.parent_category as p_category %}
+            <meta name="og:title" content="{{ p_category.title }}">
+            <meta name="og:description" content="{{ p_category.description|clean_html }}">
+            {% if p_category.seo_thumbnail %}
+                <meta name="og:image" content="http://{{ request.get_host }}{{ p_category.seo_thumbnail.url }}">
+            {% endif %}
+        {% endwith %}
+    {% else %}
+        {% with category.parent_category.parent_category as p_category %}
+            <meta name="og:title" content="{{ p_category.title }}">
+            <meta name="og:description" content="{{ p_category.description|clean_html }}">
+            {% if p_category.seo_thumbnail %}
+                <meta name="og:image" content="http://{{ request.get_host }}{{ p_category.seo_thumbnail.url }}">
+            {% endif %}
+        {% endwith %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="uk-container uk-container-large uk-margin-medium-top">
+        <ul class="uk-breadcrumb uk-flex-middle uk-flex">
+            <li><a href="{% url 'client_app:index' %}"><span uk-icon="icon: home"></span></a></li>
+            {% if level == 'parent' %}
+                <li><a href="{% url 'categories:parent_category' category_slug=category.slug %}">{{ category.title }}</a></li>
+            {% elif level == 'second' %}
+                <li><a href="{% url 'categories:parent_category' category_slug=category.parent_category.slug %}">{{ category.parent_category.title }}</a></li>
+                <li><span>{{ category.title }}...</span></li>
+            {% elif level == 'third' %}
+                <li><a href="{% url 'categories:parent_category' category_slug=category.parent_category.parent_category.slug %}">{{ category.parent_category.parent_category.title }}</a></li>
+                <li><a href="{% url 'categories:second_level_category' category_slug=category.parent_category.parent_category.slug second_category_slug=category.parent_category.slug %}">{{ category.parent_category.title }}</a></li>
+                <li><span>{{ category.title }}</span></li>
+            {% endif %}
+        </ul>
+    </div>
+    <section class="category uk-margin-medium-top">
+        <div class="uk-container uk-container-large">
+            <div class="uk-grid" uk-grid>
+                <div class="uk-width-1-5@l uk-width-1-3@m">
+                    <div class="cover">
+                        <div class="head-category">
+                            <button class="uk-button uk-button-default uk-flex uk-width-1-1 uk-flex-between"
+                                    type="button">
+                                <div class="icon-grid">
+                                    <span uk-icon="icon: grid"></span>
+                                    Подкатегории
+                                </div>
+                                <div class="arrow-button">
+                                    <span uk-icon="icon: chevron-down"></span>
+                                </div>
+                            </button>
+                            <div uk-dropdown="pos: bottom-justify; mode: click">
+                                <ul class="uk-nav uk-dropdown-nav">
+                                    {% if level == 'parent' %}
+                                        {% for cat in category.sub_categories %}
+                                            <li class="uk-nav-header"><a href="{% url 'categories:second_level_category' category_slug=category.slug second_category_slug=cat.slug %}">{{ cat.title }}</a></li>
+                                            {% for sub_cat in cat.sub_categories %}
+                                                <li><a href="{% url 'categories:third_level_category' category_slug=category.slug second_category_slug=cat.slug third_category_slug=sub_cat.slug %}">{{ sub_cat.title }}</a></li>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    {% elif level == 'second' %}
+                                        {% for cat in category.sub_categories %}
+                                            <li><a href="{% url 'categories:third_level_category' category_slug=category.parent_category.slug second_category_slug=category.slug third_category_slug=cat.slug %}">{{ cat.title }}</a></li>
+                                        {% endfor %}
+                                    {% elif level == 'third' %}
+                                        {% for cat in display_categories %}
+                                            <li><a href="{% url 'categories:third_level_category' category_slug=cat.parent_category.parent_category.slug second_category_slug=cat.parent_category.slug third_category_slug=cat.slug %}">{{ cat.title }}</a></li>
+                                        {% endfor %}
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="body-category">
+                            <h3>Подобрать товар:</h3>
+                            <hr>
+                            <div class="rangeSlider">
+                                <h4>Цена [руб]</h4>
+                                <div id="slider"></div>
+                                <div class="uk-grid uk-grid-small uk-child-width-1-2" uk-grid>
+                                    <div><input id="input-number-start" class="uk-input" type="number" value='0' placeholder="" /></div>
+                                    <div><input id="input-number-end" class="uk-input" type="number" value='0' placeholder="" /></div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="checkbox-filter">
+                                <ul uk-accordion="multiple: true">
+                                    <li class="uk-open">
+                                        <h3 class="uk-accordion-title">Бренд</h3>
+                                        <div class="uk-accordion-content">
+                                            {% for b in brands %}
+                                                <div class="uk-margin-small">
+                                                    <label class="uk-display-block">
+                                                        <input class="uk-checkbox brand-option" type="checkbox" checked data-brand-id="{{ b.id }}">
+                                                        {{ b.title }} <span>[{{ b.product_set.count }}]</span></label>
+                                                </div>
+                                            {% endfor %}
+                                            <hr>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="uk-width-expand@m">
+                    <div class="filter-product">
+                        <h1 class="title_border-left">
+                            {% if level == 'parent' %}
+                            {{ category.title }}
+                        {% elif level == 'second' %}
+                            {% with category.parent_category as p_category %}
+                                {{ p_category.title }}
+                            {% endwith %}
+                        {% else %}
+                            {% with category.parent_category.parent_category as p_category %}
+                                {{ p_category.title }}
+                            {% endwith %}
+                        {% endif %}
+                            <span class="uk-float-right">
+                            Общее количество товаров: <b>{{ total_product_count }}</b>
+                        </span>
+                        </h1>
+                        <div class="short">
+                            <div class="uk-grid uk-grid-collapse" uk-grid>
+                                <div class="uk-width-expand">
+                                    <div class="short-button">
+                                        <div class="uk-display-inline-block uk-margin-medium-right">
+                                            Сортировать по:
+                                        </div>
+                                        <div class="uk-display-inline-block ">
+                                            <a href="{% get_prepared_url request.get_full_path 'sorting' %}sorting=price"{% if sorting == 'price' %} class="uk-active"{% endif %}>Цене</a>
+                                            <a href="{% get_prepared_url request.get_full_path 'sorting' %}sorting=-created_at"{% if sorting == '-created_at' %} class="uk-active"{% endif %}> Новизне</a>
+                                            <a href="{% get_prepared_url request.get_full_path 'sorting' %}sorting=-is_stock" class="uk-active">Акциям</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {#<div class="uk-width-auto uk-hidden">#}
+                                    {#<div class="change-button-item">#}
+                                        {#<a href="#grid" class="display-mode uk-active" uk-icon="icon: grid; ratio: 1.2" title="Плитка" uk-tooltip></a>#}
+                                        {#<a href="#list" class="display-mode" uk-icon="icon: menu; ratio: 1.2" title="Список" uk-tooltip></a>#}
+                                    {#</div>#}
+                                {#</div>#}
+                            </div>
+                        </div>
+                        <div class="item-product uk-margin-medium-top" id="grid">
+                            <div class="uk-grid uk-grid-small uk-grid-collapse uk-grid-match uk-child-width-1-4@l"
+                                 uk-height-match="target: > div > .uk-card-small > h3.uk-card-title"
+                                 uk-grid id="product-container">
+                                {% include 'app/partial/products.html' %}
+                            </div>
+
+                            {% include 'app/partial/pagination.html' with pagination=products %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    {% if level == 'parent' %}
+        <section class="about_company uk-margin-medium-top">
+            <div class="uk-container uk-container-large">
+                <div class="uk-grid  uk-box-shadow-hover-xlarge uk-card-default uk-grid-collapse bg-white uk-flex-middle">
+                    {% if category.seo_thumbnail %}
+                        <div class="uk-width-auto@m  uk-visible@m">
+                            <div class="uk-padding ">
+                                <img src="{{ category.seo_thumbnail.url }}" alt="{{ category.title }}">
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="uk-width-expand">
+                        <div class="uk-padding ">
+                            <h2 class="title_border-left">
+                                описание: {{ category.title }}
+                            </h2>
+                            <p>{{ category.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% elif level == 'second' %}
+        {% with category.parent_category as t_category %}
+            <section class="about_company uk-margin-medium-top">
+                <div class="uk-container uk-container-large">
+                    <div class="uk-grid  uk-box-shadow-hover-xlarge uk-card-default uk-grid-collapse bg-white uk-flex-middle">
+                        {% if t_category.seo_thumbnail %}
+                            <div class="uk-width-auto@m  uk-visible@m">
+                                <div class="uk-padding ">
+                                    <img src="{{ t_category.seo_thumbnail.url }}" alt="{{ t_category.title }}">
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="uk-width-expand">
+                            <div class="uk-padding ">
+                                <h2 class="title_border-left">
+                                    описание: {{ t_category.title }}
+                                </h2>
+                                <p>{{ t_category.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        {% endwith %}
+    {% else %}
+        {% with category.parent_category.parent_category as t_category %}
+            <section class="about_company uk-margin-medium-top">
+                <div class="uk-container uk-container-large">
+                    <div class="uk-grid  uk-box-shadow-hover-xlarge uk-card-default uk-grid-collapse bg-white uk-flex-middle">
+                        {% if t_category.seo_thumbnail %}
+                            <div class="uk-width-auto@m  uk-visible@m">
+                                <div class="uk-padding ">
+                                    <img src="{{ t_category.seo_thumbnail.url }}" alt="{{ t_category.title }}">
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="uk-width-expand">
+                            <div class="uk-padding ">
+                                <h2 class="title_border-left">
+                                    описание: {{ t_category.title }}
+                                </h2>
+                                <p>{{ t_category.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        {% endwith %}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        var sliderRange = document.getElementById('slider');
+
+        noUiSlider.create(slider, {
+            start: [parseFloat('{{ min_price|to_number }}'), parseFloat('{{ max_price|to_number }}')],
+            connect: true,
+            range: {
+                'min': parseFloat('{{ min_price|to_number }}'),
+                'max': parseFloat('{{ max_price|to_number }}')
+            }
+        });
+
+        var inputNumberStart = document.getElementById('input-number-start');
+        var inputNumberEnd = document.getElementById('input-number-end');
+        var inputs = [inputNumberStart, inputNumberEnd];
+
+        sliderRange.noUiSlider.on('update', function (values, handle) {
+
+            var value = values[handle];
+
+            if (handle) {
+                inputNumberEnd.value = value;
+                $(inputNumberEnd).trigger('change');
+            } else {
+                inputNumberStart.value = value;
+                $(inputNumberStart).trigger('change');
+            }
+        });
+
+        inputNumberStart.addEventListener('change', function () {
+            sliderRange.noUiSlider.set([this.value, null]);
+        });
+
+        inputNumberEnd.addEventListener('change', function () {
+            sliderRange.noUiSlider.set([null, this.value]);
+        });
+
+        var brands = $('.brand-option');
+
+        function applyFilters() {
+            var _brands = [];
+            brands.each(function () {
+                if($(this).prop('checked')) {
+                    _brands.push(parseInt($(this).attr('data-brand-id')));
+                }
+            });
+            $.ajax({
+                url: document.location.href,
+                method: 'POST',
+                dataType: 'HTML',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'min_price': $(inputNumberStart).val(),
+                    'max_price': $(inputNumberEnd).val(),
+                    'brands': JSON.stringify(_brands)
+                },
+                success: function (response) {
+                    $('#product-container').html(response);
+                    initBasketButtons();
+                    initToComparisonButtons();
+                },
+                error: function () {
+                    UIkit.notification({
+                        message: 'Произошла неизвестная ошибка!',
+                        status: 'danger',
+                        pos: 'top-right',
+                        timeout: 4000
+                    });
+                }
+            });
+        }
+
+        $(inputNumberEnd).on('change', applyFilters);
+        $(inputNumberStart).on('change', applyFilters);
+        $(brands).each(function () {
+            $(this).on('change', applyFilters);
+        });
+    </script>
+
+{#    <script>#}
+{#        $(document).ready(function () {#}
+{#            var displayModeButtons = $('.display-mode');#}
+{#            var modes = [$('#grid'), $('#list')];#}
+{##}
+{#            function switchMode(id) {#}
+{#                modes.forEach(function (obj) {#}
+{#                    if(id === '#' + obj.attr('id')) {#}
+{#                        obj.fadeIn('slow');#}
+{#                        setCookie('product_display_mode', id);#}
+{#                    } else {#}
+{#                        obj.fadeOut('fast');#}
+{#                    }#}
+{#                });#}
+{#            }#}
+{##}
+{#            function setActive(obj) {#}
+{#                displayModeButtons.each(function () {#}
+{#                    if($(this).attr('href') === obj.attr('href')) {#}
+{#                        $(this).removeClass('uk-active').addClass('uk-active');#}
+{#                    } else {#}
+{#                        $(this).removeClass('uk-active');#}
+{#                    }#}
+{#                });#}
+{#            }#}
+{##}
+{#            switchMode(getCookie('product_display_mode'));#}
+{##}
+{#            displayModeButtons.each(function () {#}
+{#                $(this).on('click', function (e) {#}
+{#                    e.preventDefault();#}
+{#                    switchMode($(this).attr('href'));#}
+{#                    setActive($(this));#}
+{#                });#}
+{##}
+{#                if($(this).attr('href') === getCookie('product_display_mode')) {#}
+{#                    setActive($(this));#}
+{#                }#}
+{#            });#}
+{#        });#}
+{#    </script>#}
+{% endblock %}

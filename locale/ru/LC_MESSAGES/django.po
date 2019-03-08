@@ -1,0 +1,103 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-08-14 11:46+0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: MyBrands/settings.py:149
+msgid "English"
+msgstr "Английский"
+
+#: MyBrands/settings.py:150
+msgid "Russian"
+msgstr "Русский"
+
+#: users/admin.py:39
+msgid "Personal info"
+msgstr "Личная информация"
+
+#: users/admin.py:40
+msgid "Permissions"
+msgstr "Права доступа"
+
+#: users/admin.py:42
+msgid "Important dates"
+msgstr "Важные даты"
+
+#: users/admin.py:127
+#, python-format
+msgid "%(name)s object with primary key %(key)r does not exist."
+msgstr ""
+
+#: users/admin.py:137
+msgid "Password changed successfully."
+msgstr ""
+
+#: users/admin.py:157
+#, python-format
+msgid "Change password: %s"
+msgstr ""
+
+#: users/forms.py:23 users/forms.py:100
+msgid "The two password fields didn't match."
+msgstr ""
+
+#: users/forms.py:26 users/forms.py:28 users/forms.py:63 users/forms.py:92
+#: users/forms.py:94 users/forms.py:103 users/forms.py:105
+msgid "Password"
+msgstr "Пароль"
+
+#: users/forms.py:31 users/forms.py:108
+msgid "Password confirmation"
+msgstr "Подтверждение пароля"
+
+#: users/forms.py:32 users/forms.py:109
+msgid "Confirm Password"
+msgstr "Повторите пароль"
+
+#: users/forms.py:34 users/forms.py:111
+msgid "Enter the same password as before, for verification."
+msgstr ""
+
+#: users/forms.py:65
+msgid ""
+"Raw passwords are not stored, so there is no way to see this user's "
+"password, but you can change the password using <a href=\"../password/"
+"\">this form</a>."
+msgstr ""
+
+#: users/models.py:14
+msgid "email address"
+msgstr "Email адрес"
+
+#: users/models.py:32
+msgid "avatar"
+msgstr "Изображение профиля"
+
+#: users/models.py:33
+msgid "avatars"
+msgstr "Изображения профиля"
+
+#: users/models.py:35
+msgid "User"
+msgstr "Пользователь"
+
+#: users/models.py:36
+msgid "Image"
+msgstr "Изображение"

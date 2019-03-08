@@ -1,0 +1,290 @@
+{% extends 'base.html' %}
+
+{% load staticfiles product_template_helpers %}
+
+{% block title %}Корзина{% endblock %}
+
+{% block css %}
+    <style>
+        .overlay {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            display: none;
+        }
+
+        .spinner-wrapper {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="uk-container uk-container-large uk-margin-medium-top">
+        <ul class="uk-breadcrumb uk-flex-middle uk-flex">
+            <li><a href="{% url 'client_app:index' %}"><span uk-icon="icon: home"></span></a></li>
+            <li><span>Корзина</span></li>
+        </ul>
+    </div>
+
+    <section class="basket-page uk-margin-medium-top">
+        <div class="uk-container uk-container-large">
+            <div class="uk-grid uk-grid-large" uk-grid>
+                <div class="uk-width-1-1">
+                    <h1 class="title_border-left">Корзина
+                        <a href="{% url 'orders:clean_basket' %}" class="remove-item uk-float-right"
+                           id="clear-basket-button"><i class="fa fa-trash-o" aria-hidden="true"></i> Очистить
+                            корзину</a>
+                    </h1>
+                    <div class=" uk-box-shadow-hover-xlarge uk-padding-remove uk-card-default">
+                        <div class="uk-overflow-auto">
+                            <table class="uk-margin-remove uk-table uk-table-hover uk-table-middle uk-table-divider">
+                                <thead>
+                                <tr>
+                                    <th class="uk-width-small">Наименование</th>
+                                    <th class="uk-table-expand"></th>
+                                    <th class="uk-width-medium">Цена</th>
+                                    <th class="uk-width-medium">Количество</th>
+                                    <th class="uk-width-small">Итого</th>
+                                </tr>
+                                </thead>
+                                <tbody id="basket-items">
+                                {% for row in basket %}
+                                    <tr>
+                                        <td class="uk-text-center"><img class="uk-preserve-width uk-border-circle"
+                                                                        src="{{ row.product.main_image.url }}"
+                                                                        width="40" alt="{{ row.product.title }}"></td>
+                                        <td class="uk-table-link">
+                                            <a class=""
+                                               href="{% url 'products:product_single' product_slug=row.product.slug %}">
+                                                <div class="uk-display-block uk-label">Артикул: <span>107424</span>
+                                                </div>
+                                                {{ row.product.title }}
+                                            </a>
+                                        </td>
+                                        <td class="uk-text-truncate">{{ row.product.get_price }} руб.</td>
+                                        <td class="uk-text-nowrap">
+                                            <form class="decrease_increase">
+                                                <fieldset class="uk-margin-remove">
+                                                    <div class="uk-border uk-float-left">
+                                                        <input type="button" value="-" class="decrease"/>
+                                                        <input type="text" class="increase_decrease"
+                                                               value="{{ row.count }}" placeholder="0"
+                                                               data-price="{{ row.product.get_price }}"
+                                                               data-link="{% url 'orders:add_count' b_id=row.id %}"/>
+                                                        <input type="button" value="+" class="increase"/>
+                                                    </div>
+                                                </fieldset>
+                                            </form>
+                                        </td>
+                                        <td class="uk-text-nowrap basket-row-product-subtotal-price">{{ row.row_price }}
+                                            руб.
+                                        </td>
+                                        <td class="uk-text-nowrap"><a
+                                                href="{% url 'orders:basket_remove' b_id=row.id %}"
+                                                class="remove-basket-item-trigger" uk-icon="icon: close"></a></td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="6">
+                                            <p>В вашей корзине ещё нет товаров</p>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="total-product">
+                                <div class="uk-grid uk-flex-middle uk-child-width-1-3@m uk-grid-collapse uk-text-center"
+                                     uk-grid>
+                                    <div class="left">
+                                        <span class="uk-margin-medium-right uk-display-inline-block"><i
+                                                class="fa fa-cube uk-margin-small-right"
+                                                aria-hidden="true"></i>Вес: <span
+                                                id="total-weight">{{ total_weight|pprint }}</span> кг</span>
+                                        <span class=""><span class="uk-margin-small-right" uk-icon="icon: cart"></span>Товаров: <span
+                                                id="basket-product-count">{{ product_count }}</span></span>
+                                    </div>
+                                    <div class="middle">
+                                        <span><i class="fa fa-money uk-margin-small-right" aria-hidden="true"></i> Итого: <b
+                                                id="basket-total-price">{{ total_price }} руб.</b></span>
+                                    </div>
+                                    <div class="right">
+                                        <a href="{% url 'orders:checkout' %}" class="uk-button uk-button-default">Оформить
+                                            заказ</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <div class="overlay" id="loading-effect">
+        <div class="spinner-wrapper">
+            <span uk-spinner></span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+            var removeFromBasket = $('.remove-basket-item-trigger');
+            var loadingEffect = $('#loading-effect');
+            removeFromBasket.each(function () {
+                $(this).on('click', function (e) {
+                    e.preventDefault();
+                    var $this = $(this);
+                    loadingEffect.fadeIn('fast');
+                    $.ajax({
+                        url: $this.attr('href'),
+                        method: 'GET',
+                        dataType: 'JSON',
+                        success: function (response) {
+                            updateBasketTotalPrice();
+                            $this.parent().parent().fadeOut('slow', function () {
+                                $(this).remove();
+                            });
+                            UIkit.notification({
+                                'status': 'success',
+                                'pos': 'top-right',
+                                'message': response.message,
+                                'timeout': 5000
+                            });
+                            loadingEffect.fadeOut('slow');
+                        },
+                        error: function () {
+                            UIkit.notification({
+                                'status': 'danger',
+                                'pos': 'top-right',
+                                'message': 'Произошла неизвестная ошибка',
+                                'timeout': 5000
+                            });
+                        }
+                    });
+                });
+            });
+        });
+
+
+        function updateBasketTotalPrice() {
+            var link = '{% url 'orders:get_total_basket_price' %}';
+            var basketTotalPriceHolder = $('#basket-total-price');
+            var basketProductCountHolder = $('#basket-product-count');
+
+            $.ajax({
+                url: link,
+                method: 'GET',
+                dataType: 'JSON',
+                success: function (response) {
+                    basketProductCountHolder.html(response.product_count);
+                    basketTotalPriceHolder.html(response.total_price + ' руб.');
+                    $('#abstract-basket-count').html(response.product_count);
+                    $('#total-weight').html(response.total_weight);
+                }
+            });
+        }
+
+
+        $(document).ready(function () {
+            var countInput = $('.increase_decrease');
+
+            countInput.each(function () {
+                var $this = $(this);
+                $this.on('change', function (e) {
+                    $.ajax({
+                        url: $this.attr('data-link'),
+                        method: 'POST',
+                        dataType: 'JSON',
+                        data: {
+                            'count': $this.val(),
+                            'csrfmiddlewaretoken': '{{ csrf_token }}'
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                var priceContainer = $this.parent().parent().parent().parent().parent().find('.basket-row-product-subtotal-price');
+                                var productPrice = $this.attr('data-price');
+                                var subtotal = parseInt($this.val()) * parseInt(productPrice);
+                                priceContainer.html(subtotal + ' руб.');
+                                updateBasketTotalPrice();
+                            } else {
+                                UIkit.notification({
+                                    message: response.message,
+                                    pos: 'top-right',
+                                    status: 'danger',
+                                    timeout: 5000
+                                });
+                            }
+                        },
+                        error: function () {
+                            UIkit.notification({
+                                message: 'Произошла ошибка при обновлении корзины, попробуйте позже',
+                                pos: 'top-right',
+                                status: 'danger',
+                                timeout: 5000
+                            });
+                        }
+                    });
+                });
+
+                var increase = $this.parent().find('.increase');
+                var decrease = $this.parent().find('.decrease');
+
+                increase.on('click', function (e) {
+                    e.preventDefault();
+                    var val = $this.val();
+                    val++;
+                    $this.val(val);
+                    $this.trigger('change');
+                });
+
+                decrease.on('click', function (e) {
+                    e.preventDefault();
+                    var val = $this.val();
+                    if (val > 0)
+                        val--;
+                    $this.val(val);
+                    $this.trigger('change');
+                });
+            });
+
+
+            $('#clear-basket-button').on('click', function (e) {
+                e.preventDefault();
+                var that = $(this);
+                var loadingEffect = $('#loading-effect');
+                loadingEffect.fadeIn('fast');
+                $.ajax({
+                    url: that.attr('href'),
+                    method: 'GET',
+                    dataType: 'JSON',
+                    success: function (response) {
+                        UIkit.notification({
+                            message: response.message,
+                            pos: 'top-right',
+                            status: 'success',
+                            timeout: 5000
+                        });
+                        $('#basket-items').html('<tr>' +
+                            '<td colspan="6"><p>Ваша корзина пуста</p></td>' +
+                            '</tr>');
+                        updateBasketTotalPrice();
+                        loadingEffect.fadeOut('slow');
+                    }
+                });
+            });
+
+        });
+    </script>
+{% endblock %}

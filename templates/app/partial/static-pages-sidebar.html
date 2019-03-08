@@ -1,0 +1,10 @@
+<ul>
+    <li{% if location == 'payments' %} class="uk-active"{% endif %}><a href="{% url 'client_app:payments_info' %}">Оплата</a></li>
+    <li{% if location == 'delivery' %} class="uk-active"{% endif %}><a href="{% url 'client_app:delivery_info' %}">Доставка</a></li>
+    <li{% if location == 'price-list' %} class="uk-active"{% endif %}><a href="{% url 'client_app:price_list' %}">Прайс лист</a></li>
+    <li{% if location == 'service' %} class="uk-active"{% endif %}><a href="{% url 'client_app:service' %}">Сервис</a></li>
+    <li{% if location == 'to-partners' %} class="uk-active"{% endif %}><a href="{% url 'client_app:to_partners' %}">Партнерам</a></li>
+    <li{% if location == 'about-company' %} class="uk-active"{% endif %}><a href="{% url 'client_app:about' %}">О компании</a></li>
+    <li{% if location == 'reviews' %} class="uk-active"{% endif %}><a href="{% url 'client_app:reviews' %}">Отзывы</a></li>
+    <li{% if location == 'contacts' %} class="uk-active"{% endif %}><a href="{% url 'client_app:contacts' %}">Контакты</a></li>
+</ul>

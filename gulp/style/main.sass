@@ -1,0 +1,1353 @@
+@import "uikit/uikit.min.css"
+@import "slick/slick.css"
+@import "easy-autocomplete/easy-autocomplete.css"
+@import "font-awesome/font-awesome.css"
+@import "nouislider/nouislider.css"
+@import "fonts.sass"
+
+
+//------------------------color
+$green: #19934c
+$green-hover: #158242
+$blue: #2857c5
+$blue-hover: #21469c
+$red: #bf4646
+
+//-----------------------Fonts
+$bbb: BenderBold-Bold
+$bb: BenderBlack
+$osb: OpenSansBold
+$os: OpenSansRegular
+//easy-autocomplete-container ul
+
+.uk-breadcrumb>:nth-child(n+2):not(.uk-first-column)::before
+  content: "\f178"
+  font-family: FontAwesome
+  margin: 0 20px
+  color: $green
+.uk-breadcrumb>*>*
+  color: $green
+.easy-autocomplete-container
+  ul
+    top: 0
+    border-radius: 3px
+    border: 1px solid $green
+    li
+      border: 0
+
+body
+  font-family: $os
+  background-color: #eef0ef
+//-------------------------var
+.title_border-left
+  font-size: 30px
+  text-transform: uppercase
+  position: relative
+  font-family: $bb
+  padding-left: 20px
+  overflow: hidden
+  &:before
+    position: absolute
+    left: 0
+    top: 8px
+    width: 6px
+    height: 22px
+    background-color: $green
+    content: ''
+  u
+    color: $green
+  span
+    font-size: 16px
+    font-family: $osb
+    color: #919191
+    margin-top: 10px
+    b
+      color: #404040
+  a
+    text-transform: capitalize
+    background-color: #fff
+    color: $green
+    border-color: #fff
+    span
+      color: $green
+    &:hover
+      border-color: $green
+      background-color: $green
+      color: #fff
+      span
+        color: #fff
+  .remove-item
+    font-size: 16px
+    font-family: $osb
+    color: $red !important
+    background-color: transparent !important
+    text-decoration: none
+    padding: 8px 0
+    i
+
+//------------------------header
+header
+  .top-line
+    background-color: #d5dfda
+    .uk-navbar-container
+      background-color: transparent !important
+    .uk-navbar-left
+      ul
+        li.uk-active
+          a
+            color: $red
+            &:before
+              background-color: $red
+        li
+          a
+            font-size: 13px
+            font-family: $osb
+            position: relative
+            color: #404040
+            text-transform: capitalize
+            height: 35px
+            &:before
+              position: absolute
+              content: ''
+              left: 0
+              width: 5px
+              height: 5px
+              background-color: $green
+              top: 50%
+              margin-top: -2.5px
+            &:hover
+              color: $red
+              &:before
+                background-color: $red
+    .uk-navbar-right
+      ul
+        li
+          a
+            font-size: 13px
+            font-family: $osb
+            color: #404040
+            height: 35px
+        li.call-back
+          a
+            background-color: $green
+            color: #fff
+            text-transform: none
+            &:hover
+              background-color: $green-hover
+  .middle-line
+    padding: 10px 0
+    background-color: #fff
+    .logo
+      position: relative
+      a
+        position: absolute
+        top: 0
+        bottom: 0
+        right: 0
+        left: 0
+      h1
+        font-size: 30px
+        font-family: $bb
+        color: $green
+        margin: 0
+      h2
+        font-size: 14px
+        color: #7a7a7a
+        margin: 0
+    .search
+      .uk-search-default
+        width: 100%
+        input
+          border-color: $green
+          height: 50px
+          padding-left: 10px
+          padding-right: 30px
+          &:focus
+            border-color: $green-hover
+          &:focus + span
+            color: $green-hover
+        button
+          color: $green
+          &:hover
+            color: $green-hover
+    .calculator
+      div
+        background-color: $blue
+        color: #fff
+        padding: 6px 10px
+        font-size: 13px
+        position: relative
+        font-family: $osb
+        transition: .1s ease-in-out
+        -webkit-transition-property: color,background-color
+        transition-property: color,background-color
+        &:hover
+          background-color: $blue-hover
+        a
+          position: absolute
+          top: 0
+          bottom: 0
+          right: 0
+          left: 0
+        i
+          margin-top: 5px
+          margin-right: 5px
+    .basket
+      .uk-badge
+        font-family: $osb
+        min-width: 25px
+        height: 25px
+        line-height: 25px
+        position: absolute
+        right: 25px
+        z-index: 1
+        top: -5px
+        background-color: $red
+        border: 3px solid #fff
+      .compare-button
+        div
+          position: relative
+          width: 105px
+        a
+          position: absolute
+          top: 0
+          bottom: 0
+          right: 0
+          left: 0
+          z-index: 1
+        span.uk-display-block
+          color: $blue
+          transition: 0.3s
+        &:hover
+          span.uk-display-block
+            color: #000
+
+      .basket-button
+        div
+          width: 105px
+          position: relative
+        a
+          position: absolute
+          top: 0
+          bottom: 0
+          right: 0
+          left: 0
+          z-index: 1
+        span.uk-display-block
+          color: $green
+          transition: 0.3s
+        &:hover
+          span.uk-display-block
+            color: #000
+  .bottom-line
+    background-color: $green
+    .uk-navbar-nav > li > a
+      color: #fff
+      font-size: 12px
+      height: 52px
+    ul
+      padding: 0
+      margin: 0
+    .uk-navbar-dropdown
+      margin: 0
+      padding: 0
+      border: 2px solid $green
+      min-height: 500px
+      a
+        display: block
+        font-size: 15px
+        color: #404040
+        font-family: $osb
+        padding: 5px 20px
+    .parent-category
+      float: left
+      width: 33.3% !important
+      left: 0 !important
+      box-shadow: none
+      padding: 0
+      ul
+        margin: 0
+      li
+        list-style: none
+      li:hover
+        background-color: #e8f4ed
+
+      .sub-category
+        width: 33.3% !important
+        left: 33.3% !important
+        top: 0 !important
+        height: 100%
+        box-shadow: none
+        margin: 0
+        padding: 0
+        background-color: #e8f4ed
+        ul
+          margin: 0
+        li:hover
+          background-color: #cdd6d0
+        .child-category
+          width: 100.4% !important
+          left: 100% !important
+          height: 100%
+          top: 0 !important
+          margin: 0
+          padding: 0
+          box-shadow: none
+          background-color: #96d0ae
+          ul
+            margin: 0
+          li:hover
+            background-color: #85b799
+//---------------home-slider
+.home-slider
+  .uk-dotnav
+    position: absolute
+    bottom: 0
+    left: 50%
+    text-align: center
+    z-index: 10
+    margin: 0 !important
+    background: rgba(0, 0, 0, 0.5)
+    padding: 20px 40px
+    transform: translateX(-50%)
+    li.uk-active
+      a
+        background-color: #fff
+        border: 2px solid transparent
+    li
+      a
+        background-color: transparent
+        border: 2px solid #959b8b
+  .bg-green
+    background: $green url(../img/png/coupon.png) 105% center  no-repeat
+    .sale
+      display: inline-block
+      padding: 10px 20px
+      background-color: $red
+      color: #fff
+      font-family: $osb
+      font-size: 17px
+    p
+      margin: 20px 0 10px 0
+      font-size: 16px
+      text-transform: uppercase
+      color: #fff
+    h3
+      margin-top: 0
+      font-size: 30px
+      font-family: $bb
+      color: #fff
+    a
+      font-family: $bb
+      color: #fff
+      font-size: 16px
+      background-color: $blue
+      border: 0
+      &:hover
+        background-color: $blue-hover
+//-----------------catalog_of_building_materials
+.catalog_of_building_materials
+  .img-wrapper
+    width: 40px
+    height: 40px
+    position: relative
+    display: inline-block
+    border-radius: 50%
+    background-color: #e8f4ed
+    overflow: hidden
+    img
+      position: absolute
+      top: -9999px
+      bottom: -9999px
+      right: -9999px
+      left: -9999px
+      margin: auto
+      display: block
+      max-width: 50%
+  .item
+    .uk-card
+      border: 3px solid transparent
+      transition: 0.3s
+      h3
+        font-family: $bb
+        font-size: 21px
+        color: $blue
+        margin: 10px 0
+        a
+          font-family: $bb
+          color: $blue
+          &:hover
+            color: $green
+      ul
+        padding: 0
+        margin: 0
+        li
+          font-family: $osb
+          color: #404040
+          font-size: 13px
+          line-height: 1.3
+          list-style: none
+          margin-bottom: 6px
+          a
+            font-family: $osb
+            color: #404040
+            &:hover
+              color: $green
+    .uk-card-body
+      padding: 15px
+  .item
+    .uk-card:hover
+      border-color: $green
+      background-color: #f8fffb
+      h3
+        color: $green
+  .item.sale
+    .img-wrapper
+      background-color: #f8ecec
+    h3
+      color: $red
+//best_promotions
+.best_promotions
+  .uk-box-shadow-hover-xlarge:hover
+    img
+      transform: translate(-50%,-50%) scale(1.4,1.4)
+  img
+    transition: 4s
+  .uk-card-media-left
+    background-color: #fff
+    .uk-overlay
+      padding: 15px 25px
+      background-color: $red
+      color: #fff
+      font-size: 14px
+      font-family: $osb
+      z-index: 10
+  .uk-card-footer
+    padding: 0
+
+  .title
+    padding: 20px
+    background-color: $green
+    h3
+      font-family: $osb
+      font-size: 24px
+      color: #fff
+  .url
+    background-color: $blue
+    padding: 0 50px
+    color: #fff
+    text-decoration: none
+    font-family: $osb
+    text-transform: capitalize
+    font-size: 14px
+    transition: 0.3s
+    &:hover
+      background-color: $blue-hover
+.single_best_promotions
+  .uk-overlay
+    padding: 15px 25px
+    background-color: $red
+    color: #fff
+    font-size: 14px
+    font-family: $osb
+    z-index: 10
+  h1
+    margin: 20px 0
+    font-size: 36px
+    font-family: $bb
+    color: #454545
+  strike
+    color: #a7a7a7
+    font-size: 18px
+    font-family: $osb
+  h4
+    margin: 0 0 20px 0
+    font-family: $osb
+    color: #5e5e5e
+    font-size: 24px
+    .price
+      color: $green
+    .item
+      font-size: 14px
+      color: #a7a7a7
+  fieldset
+    border: 0
+    padding: 0
+    .uk-border
+      padding: 20px
+      border: 2px solid $green
+    .decrease, .increase
+      background-color: $green
+      color: #fff
+      border: 0
+      outline: none
+      cursor: pointer
+      padding: 5px 10px
+    #increase_decrease
+      width: 20px
+      text-align: center
+      border: 0
+      outline: none
+    button
+      height: 70px
+      border: 2px solid $green !important
+      background-color: $green !important
+      color: #fff !important
+      border-left: 0
+      font-family: $osb
+      text-transform: capitalize
+      &:hover
+        border: 2px solid $green-hover !important
+        background-color: $green-hover !important
+        color: #fff !important
+  p
+    font-size: 16px
+    color: #000
+//articles_tips
+.articles_tips
+
+  .uk-card:hover
+    img
+      transform: translate(-50%,-50%) scale(1.4,1.4)
+  img
+    transition: 4s
+  h3
+    font-size: 18px
+    font-family: $osb
+    color: #454545
+  p
+    font-size: 14px
+    color: #757575
+  a.url
+    color: $blue
+    text-transform: capitalize
+    font-size: 14px
+    font-family: $osb
+    border: 0
+    padding-right: 0
+    span
+      color: $blue
+
+  i
+    color: #999999
+  span
+    color: #c5c5c5
+    font-family: $osb
+//steps
+.steps
+  .img-wrapper
+    width: 50px
+    height: 50px
+    overflow: hidden
+    position: relative
+    display: inline-block
+    img
+      position: absolute
+      top: -9999px
+      bottom: -9999px
+      right: -9999px
+      left: -9999px
+      margin: auto
+      max-width: 80%
+  .bg-white
+    background-color: #fff
+    position: relative
+  .uk-card
+    border-right: 1px solid #eef0ef
+    box-shadow: none !important
+    padding-bottom: 80px
+  h3
+    font-size: 18px
+    color: #000
+    margin: 20px 0 0 0
+  p
+    font-size: 12px
+    color: #717171
+    margin-bottom: 50px !important
+  span
+    position: absolute
+    bottom: 20px
+    left: 40px
+    color: $green
+    cursor: pointer
+    width:  auto !important
+  .uk-overlay-default
+    background: rgba(255,255,255,.95)
+//about_company
+.about_company
+  .bg-white
+    background-color: #fff
+  p
+    font-size: 14px
+    color: #707070
+    &:last-child
+      margin-bottom: 0
+footer
+  .subscribe
+    background-color: $green
+    padding: 30px 0
+  .image-send
+    background:  url(../img/png/sms.png) left center no-repeat
+    padding-left: 90px
+    h4
+      color: #fff
+      font-size: 22px
+      font-family: $bb
+      text-transform: uppercase
+    p
+      color: #fff
+      font-size: 16px
+  .preloader
+    color: #fff
+    text-align: center
+    width: 100%
+    margin-bottom: 20px
+  .uk-input
+    background-color: #309e5e
+    border-color: #309e5e
+    outline: none !important
+    color: #fff !important
+    &:focus
+      border-color: #309e5e
+      background-color: $green-hover
+  .uk-input::-webkit-input-placeholder
+    color: #fff
+  .uk-input::-moz-placeholder
+    color: #fff
+  .uk-input:-moz-placeholder
+    color: #fff
+  .uk-input:-ms-input-placeholder
+    color: #fff
+  button
+    background-color: #309e5e
+    border-top: 0
+    border-right: 0
+    border-bottom: 0
+    border-left: 1px solid #45a86e
+    color: #fff !important
+    outline: none
+    box-shadow: none
+    cursor: pointer
+    &:hover
+      background-color: $green-hover
+  .middle
+    background-color: #FFF
+    padding: 50px 0
+    .img-wrapper
+      width: 50px
+      height: 50px
+      position: relative
+      display: inline-block
+      border-radius: 50%
+      background-color: #e8f4ed
+      overflow: hidden
+      img
+        position: absolute
+        top: -9999px
+        bottom: -9999px
+        right: -9999px
+        left: -9999px
+        margin: auto
+        display: block
+        max-width: 50%
+    h3
+      margin: 10px 0
+      font-family:  $bb
+    ul
+      padding: 0
+      li
+        list-style: none
+        margin: 0 5px
+        a
+          color: #5a5a5a
+          &:hover
+            color: $green-hover
+
+    .social-button
+      ul
+        padding: 0
+        li
+          display: inline-block
+          list-style: none
+          margin: 0 5px
+          a
+            color: $green
+            display: block
+            &:hover
+              color: $green-hover
+            i
+.category
+  .head-category
+    button
+      background-color: #2857c5
+      border-color: #2857c5
+      color: #fff
+      padding-right: 0
+      padding-left: 15px
+      .icon-grid
+        padding: 5px 0
+      .arrow-button
+        background-color: #214eb5
+        padding: 5px 15px
+        color: #fff
+  .body-category
+    background-color: #fff
+    hr
+      margin: 0
+    h3
+      padding: 20px
+      margin: 0
+      font-family: $osb
+      color: #5d5d5d
+      font-size: 16px
+
+    h4
+      font-size: 16px
+      color: #5d5d5d
+      margin: 0
+      margin-bottom: 20px
+    .rangeSlider
+      padding: 20px
+      #slider
+        margin-bottom: 20px
+      .noUi-connect
+        background: $green
+        box-shadow: none !important
+      .noUi-handle
+        outline: none !important
+    .checkbox-filter
+      .uk-accordion-title
+
+      .uk-accordion-content
+        margin-top: 0
+        .uk-margin-small
+          padding: 0 20px
+          margin-bottom: 10px
+          label
+            cursor: pointer
+      li
+        margin-top: 0
+    .uk-checkbox:checked:focus, .uk-checkbox:indeterminate:focus, .uk-radio:checked:focus
+      background-color: $green
+      outline: none !important
+    .uk-checkbox:checked, .uk-checkbox:indeterminate, .uk-radio:checked
+      background-color: $green
+    .uk-checkbox:focus, .uk-radio:focus
+      border-color: $green
+  .filter-product
+    .short
+      .short-button
+        background-color: #fff
+        padding: 20px
+        a
+          position: relative
+          color: #707070
+          font-family: $osb
+          display: inline-block
+          margin: 0 10px
+          &:before
+            position: absolute
+            top: -20px
+            left: 0
+            right: 0
+            content: ''
+            background-color: transparent
+            height: 3px
+        a.uk-active
+          color: $blue
+          &:before
+            background-color: $blue
+        a:last-child
+          color: $red
+          &:before
+            background-color: $red
+      .change-button-item
+        background-color: #fff
+        padding: 19px
+        a
+          color: #b5cabf
+        a.uk-active
+          color: $green
+.item-product-global
+  .uk-label
+    left: 20px
+    color: #707070
+    background-color: transparent
+    right: inherit
+    font-weight: bold
+    span
+      font-weight: normal
+
+  .img-wrapper
+    height: 300px
+    position: relative
+    overflow: hidden
+    img
+      height: 100%
+  h3
+    margin: 10px 0 0 0
+    font-size: 16px
+    font-family: $osb
+    color: #000
+    text-align: center
+    height: 50px
+    overflow: hidden
+    a
+      color: #000
+  h4
+    margin-top: 0
+    font-size: 24px
+    font-family: $osb
+    text-align: center
+    height: 50px;
+    span
+      font-family: $os
+      color: #a6a6a6
+      font-size: 18px
+  .uk-button
+    background-color: $green
+    border-color: $green
+    font-family: $osb
+    font-size: 14px
+    text-transform: capitalize
+    color: #fff
+    &:hover
+      background-color: $green-hover
+      border-color: $green-hover
+  .in-basket
+    background-color: $green-hover
+    border-color: $green-hover
+  form
+    button
+      font-family: $osb
+      font-size: 14px
+      color: $green
+      background-color: transparent
+      border: 0
+      cursor: pointer
+      outline: none !important
+    a
+      font-family: $osb
+      font-size: 14px
+      color: $green
+      text-decoration: none
+      cursor: pointer
+      background-color: transparent
+      outline: none !important
+  .uk-checkbox:checked:focus, .uk-checkbox:indeterminate:focus, .uk-radio:checked:focus
+    background-color: $green
+    outline: none !important
+  .uk-checkbox:checked, .uk-checkbox:indeterminate, .uk-radio:checked
+    background-color: $green
+  .uk-checkbox:focus, .uk-radio:focus
+    border-color: $green
+.uk-pagination
+  li.uk-active
+    span
+      color: $green
+.single_product
+  .slider-for
+    div
+      outline: none !important
+      img
+  .slider-nav
+    .slick-current.slick-active
+      border-color: $green
+      img
+        opacity: 1
+    div.uk-padding-small
+      outline: none !important
+      cursor: pointer
+      width: 60px
+      height: 60px
+      overflow: hidden
+      position: relative
+      border: 2px solid #b5cabf
+      margin: 0 20px 0 0
+      img
+        max-height: 100%
+        width: auto !important
+        padding: 10px
+        opacity: 0.3
+    .slick-prev
+      position: absolute
+      cursor: pointer
+      left: 0
+      top: 50%
+      transform: translateY(-50%)
+      background-color: transparent
+      border: 0
+      box-shadow: none
+      width: 50px
+      height: 50px
+      font-size: 0
+      z-index: 10
+      outline: none !important
+      &:before
+        position: absolute
+        left: 50%
+        top: 50%
+        transform: translate(-50%, -50%)
+        content: "\f104"
+        font-family: FontAwesome
+        font-size: 50px
+    .slick-next
+      cursor: pointer
+      position: absolute
+      right: 0
+      top: 50%
+      transform: translateY(-50%)
+      background-color: transparent
+      border: 0
+      box-shadow: none
+      width: 50px
+      height: 50px
+      font-size: 0
+      z-index: 10
+      outline: none !important
+      &:before
+        position: absolute
+        left: 50%
+        top: 50%
+        transform: translate(-50%, -50%)
+        content: "\f105"
+        font-family: FontAwesome
+        font-size: 50px
+  .info_product
+    .uk-label
+      color: #707070
+      background-color: transparent
+      right: inherit
+      font-weight: 700
+      padding: 0
+      span
+        font-weight: 400
+    .title
+      margin: 20px 0
+      h1
+        font-family: $bb
+        color: #454545
+        font-size: 31px
+
+    .goods
+      margin-bottom: 20px
+      .stock
+        font-size: 25px
+        color: $green
+      .not-stock
+        color: $red
+        font-size: 25px
+    form.check
+      margin-left: 3px
+      .uk-checkbox:checked:focus, .uk-checkbox:indeterminate:focus, .uk-radio:checked:focus
+        background-color: $green
+        outline: none !important
+      .uk-checkbox:checked, .uk-checkbox:indeterminate, .uk-radio:checked
+        background-color: $green
+      .uk-checkbox:focus, .uk-radio:focus
+        border-color: $green
+      input
+      button
+        font-family: OpenSansBold
+        font-size: 14px
+        background-color: transparent
+        color: #19934c
+        outline: 0!important
+        border: 0
+        cursor: pointer
+    h4
+      font-size: 24px
+      font-family: $osb
+      color: #5e5e5e
+      margin-top: 0
+      .price
+        color: $green
+      .item
+        color: #a7a7a7
+        font-size: 14px
+
+    form.decrease_increase
+      fieldset
+        border: 0
+        padding: 0
+        .uk-border
+          padding: 20px
+          border: 2px solid $green
+        .decrease, .increase
+          background-color: $green
+          color: #fff
+          border: 0
+          outline: none
+          cursor: pointer
+          padding: 5px 10px
+        #increase_decrease
+          width: 20px
+          text-align: center
+          border: 0
+          outline: none
+        button
+          height: 70px
+          border: 2px solid $green !important
+          background-color: $green !important
+          color: #fff !important
+          border-left: 0
+          font-family: $osb
+          text-transform: capitalize
+          &:hover
+            border: 2px solid $green-hover !important
+            background-color: $green-hover !important
+            color: #fff !important
+    .one-click
+      margin-bottom: 20px
+      a
+        background-color: $blue
+        border-color: $blue
+        color: #fff
+        padding: 10px 85px
+        &:hover
+          background-color: $blue-hover
+          border-color: $blue-hover
+
+    .pay
+      div
+        .bg
+          padding: 20px
+          background-color: #e8f4ed
+        a
+          color: $blue
+          font-family: $osb
+  .characteristics
+    .uk-subnav
+      border-top: 7px solid #eef0ef
+      li
+        a
+          padding: 20px 0
+          font-size: 21px
+          font-family: $bb
+          color: $green
+          border-top: 5px solid transparent
+          transition: 0.3s
+      li.uk-active
+        a
+          background-color: #e3f4ea
+          border-top: 5px solid $green
+    .icon-question
+      color: $green
+      cursor: pointer
+    .uk-switcher
+      background: url(../img/png/bg-tab.png) top left no-repeat
+.recommendations
+  .slick-prev
+    position: absolute
+    left: 0
+    top: 50%
+    transform: translateY(-50%)
+    z-index: 10
+    cursor: pointer
+    background-color: $green
+    color: #fff
+    &:hover
+      background-color: $green-hover
+  .slick-next
+    position: absolute
+    right: 0
+    top: 50%
+    transform: translateY(-50%)
+    z-index: 10
+    cursor: pointer
+    background-color: $green
+    color: #fff
+    &:hover
+      background-color: $green-hover
+  .uk-padding-small-left
+    padding: 0 0 0 15px
+.left-menu
+  .side-bar
+    ul
+      padding: 20px 0
+      li
+        list-style: none
+        padding: 10px 20px
+        border-left: 4px solid transparent
+        transition: 0.3s
+        a
+          color: #5f5f5f
+          display: block
+          font-family: $osb
+          font-size: 16px
+          transition: 0.3s
+          text-decoration: none
+        &:hover
+          border-left: 4px solid $green
+          a
+            color: $green
+      li.uk-active
+        border-left: 4px solid $green
+        a
+
+          color: green
+  .delivery
+    .uk-accordion
+      margin-bottom: 0
+      li
+        border-bottom: 1px solid #e1e6e4
+        padding-bottom: 20px
+    .uk-accordion-title
+      font-size: 18px
+      font-family: $osb
+      color: $green
+  .about-company
+    p
+      font-size: 16px
+      color: #000
+    h3
+      font-size: 24px
+      font-family: $osb
+      color: $green
+    .number
+      margin-bottom: 50px
+      h3
+        margin-bottom: 0
+        font-size: 30px
+      p
+        margin-top: 0
+  .our_team
+    .item
+      .img-wrapper
+        width: 130px
+        height: 130px
+        overflow: hidden
+        position: absolute
+        img
+          position: absolute
+          top: 50%
+          left: 50%
+          transform: translate(-50%, -50%)
+          max-width: 100%
+      .text-field
+        padding: 33px 0 33px 140px
+        h4
+          margin: 0
+          font-size: 14px
+          color: #707070
+        h3
+          margin-top: 0
+          font-size: 18px
+          color: $green
+  .payment
+    p
+      font-size: 16px
+      color: #000
+    h3
+      font-size: 24px
+      font-family: $osb
+      color: $green
+    ul
+      padding: 0
+      margin: 0
+      li
+        list-style: none
+        position: relative
+        padding-left: 20px
+        &:before
+          position: absolute
+          content: ''
+          left: 0
+          top: 7px
+          width: 10px
+          height: 10px
+          background-color: $green
+  .comments
+    .uk-comment
+      .uk-comment-title
+        font-size: 14px
+        color: #707070
+      .uk-comment-meta
+        font-family: $bb
+        color: #404040
+        font-size: 18px
+        text-transform: uppercase
+        .name
+          color: $green
+    .uk-comment-body
+      position: relative
+      background-color: #eaeaea
+      &:before
+        position: absolute
+        top: -10px
+        left: 100px
+        width: 0
+        height: 0
+        border-style: solid
+        border-width: 0 7.5px 10px 7.5px
+        border-color: transparent transparent #eaeaea transparent
+    button
+      background-color: $blue
+      color: #fff
+      border-color: $blue
+      text-transform: capitalize
+      &:hover
+        background-color: $blue-hover
+        color: #fff
+  .partners, .prise-list
+    p
+      font-size: 16px
+      color: #000
+    h3
+      font-size: 24px
+      font-family: $osb
+      color: $green
+    button
+      background-color: $blue
+      color: #fff
+      border-color: $blue
+      text-transform: capitalize
+      width: 100%
+      &:hover
+        background-color: $blue-hover
+        color: #fff
+  .contact
+    h2
+      font-size: 21px
+      color: $green
+    ul
+      padding: 0
+      li
+        margin-bottom: 20px
+        font-size: 14px
+        color: #707070
+        list-style: none
+
+        img
+          margin-right: 20px
+        a
+          color: $green
+    .uk-button
+      background-color: $blue
+      color: #fff
+      &:hover
+        background-color: $blue-hover
+        color: #fff
+  .download
+    font-size: 18px
+    font-family: $bb
+    color: $blue
+  .confirm
+    p
+      color: #32d296
+#modal-call-back
+  p
+    margin-bottom: 40px
+  .uk-button
+    background-color: $blue
+    color: #fff
+    width: 100%
+    &:hover
+      background-color: $blue-hover
+      color: #fff
+.basket-page
+  .uk-display-inline-block.uk-label
+    background: $green
+    fieldset
+      border: 0
+      padding: 0
+      .uk-border
+        padding: 20px
+        border: 2px solid $green
+      .decrease, .increase
+        background-color: $green
+        color: #fff
+        border: 0
+        outline: none
+        cursor: pointer
+        padding: 5px 10px
+      .increase_decrease
+        width: 20px
+        text-align: center
+        border: 0
+        outline: none
+      button
+        height: 70px
+        border: 2px solid $green !important
+        background-color: $green !important
+        color: #fff !important
+        border-left: 0
+        font-family: $osb
+        text-transform: capitalize
+        &:hover
+          border: 2px solid $green-hover !important
+          background-color: $green-hover !important
+          color: #fff !important
+  .total-product
+    background-color: $green
+    padding: 30px 0
+    color: #fff
+    .left
+      span
+    .middle
+      span
+        b
+          font-size: 25px
+    .right
+      a
+        background-color: $blue
+        color: #fff
+        border-color: $blue
+        &:hover
+          background-color: $blue-hover
+          color: #fff
+          border-color: $blue-hover
+  .uk-table-hover tbody tr:hover, .uk-table-hover>tr:hover
+    background: #eef0ef
+.calculator
+  .uk-subnav
+    border-bottom: 5px solid #eef0ef
+    li
+      border-top: 5px solid #eef0ef
+      padding: 0
+      border-right: 5px solid #eef0ef
+      &:first-child
+        border-left: 5px solid #eef0ef
+      &:last-child
+
+      a
+        img
+          display: block
+          margin: 20px auto 0 auto
+        p
+          font-size: 18px
+          color: #404040
+    li.uk-active
+      border-top: 5px solid $green
+      a
+        background-color: transparent
+        img
+        p
+  .uk-switcher
+    li
+      .blue-button
+        background-color: #2857c5
+        color: #fff
+        border-color: #2857c5
+        &:hover
+          background-color: #21469c
+          color: #fff
+          border-color: #21469c
+      h3
+        color: $green
+        font-weight: bold
+.uk-input:focus, .uk-select:focus, .uk-textarea:focus
+  border-color: $green
+.comparisons
+  .uk-table th
+    padding: 16px 12px
+    vertical-align: top
+  .comparisons-img
+    width: 100px !important
+    height:  auto !important
+  .active-comparisons
+    background: #ffd
+  .uk-table-striped tbody tr:nth-of-type(odd), .uk-table-striped>tr:nth-of-type(odd)
+    background: #f9fdfb
+
+@import "media.sass"

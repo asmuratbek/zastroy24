@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Акции{% endblock %}
+
+{% block content %}
+    <div class="uk-container uk-container-large uk-margin-medium-top">
+        <ul class="uk-breadcrumb uk-flex-middle uk-flex">
+            <li><a href="{% url 'client_app:index' %}"><span uk-icon="icon: home"></span></a></li>
+            <li><span>Акции</span></li>
+        </ul>
+    </div>
+    <section class="best_promotions uk-margin-medium-top">
+        <div class="uk-container uk-container-large">
+            <h2 class="title_border-left">
+                все акции
+            </h2>
+            <div class="uk-grid  uk-margin-medium-top uk-child-width-1-2@m" uk-grid
+                 uk-height-match="target: div > div > div >.title">
+                {% for promotion in promotions %}
+                    <div>
+                        <div class="uk-box-shadow-hover-xlarge uk-card-default">
+                            <div class="uk-card-media-left uk-cover-container">
+                                <div class="uk-position-top-left uk-overlay uk-overlay-default">
+                                    {% if promotion.expires_date %}
+                                        <span uk-icon="icon: calendar" class="uk-margin-small-right"></span>
+                                        Акция действует до {{ promotion.expires_date|date:"d M Y года" }}
+                                    {% else %}
+                                        Акция
+                                    {% endif %}
+                                </div>
+                                <img src="{{ promotion.product.main_image.url }}" alt="{{ promotion.product.title }}" uk-cover>
+                                <canvas width="600" height="400"></canvas>
+                            </div>
+                            <div class="uk-card-footer">
+                                <div class="uk-grid uk-grid-collapse ">
+                                    <div class="uk-width-expand@m title ">
+                                        <h3>{{ promotion.title }}</h3>
+                                    </div>
+                                    <a class="uk-width-auto@m uk-flex uk-flex-middle url" href="{% url 'promotions:single' slug=promotion.slug %}">Подробнее
+                                        <span class="uk-margin-small-left" uk-icon="icon: chevron-right"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div>
+                        <p>Сожалеем, но у нас пока не проводятся акции</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

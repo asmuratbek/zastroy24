@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Результаты поиска{% endblock %}
+
+{% block content %}
+    <div class="uk-container uk-container-large uk-margin-medium-top">
+        <ul class="uk-breadcrumb uk-flex-middle uk-flex">
+            <li><a href="{% url 'client_app:index' %}"><span uk-icon="icon: home"></span></a></li>
+            <li><span>Поиск</span></li>
+        </ul>
+    </div>
+    <section class="category uk-margin-medium-top">
+        <div class="uk-container uk-container-large">
+            <div class="uk-grid" uk-grid>
+                <div class="uk-width-expand@m">
+                    <div class="filter-product">
+                        <h1 class="title_border-left">
+                            результат поиска <u>'{{ search_word }}'</u>
+                            <span class="uk-float-right">
+                                Найдено: <b>{{ result_count }}</b>
+                            </span>
+                        </h1>
+                        <div class="item-product uk-margin-medium-top">
+                            <div class="uk-grid uk-grid-match uk-child-width-1-5@l" uk-height-match="target: > div > .uk-card-small > h3.uk-card-title"
+                                 uk-grid>
+                                {% include 'app/partial/products.html' %}
+                            </div>
+                            {% include 'app/partial/pagination.html' with pagination=products %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

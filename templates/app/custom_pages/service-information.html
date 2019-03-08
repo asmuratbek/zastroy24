@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Сервис{% endblock %}
+
+{% block content %}
+    <div class="uk-container uk-container-large uk-margin-medium-top">
+        <ul class="uk-breadcrumb uk-flex-middle uk-flex">
+            <li><a href="{% url 'client_app:index' %}"><span uk-icon="icon: home"></span></a></li>
+            <li><span>Сервис</span></li>
+        </ul>
+    </div>
+    <section class="left-menu uk-margin-medium-top">
+        <div class="uk-container uk-container-large">
+            <div class="uk-grid uk-grid-large" uk-grid>
+                <div class="uk-width-1-6@l uk-width-1-4@m">
+                    <div class="uk-box-shadow-hover-xlarge side-bar uk-card-default">
+                        {% include 'app/partial/static-pages-sidebar.html' %}
+                    </div>
+                </div>
+                <div class="uk-width-expand">
+                    <h1 class="title_border-left">сервис</h1>
+                    <div class="prise-list uk-box-shadow-hover-xlarge uk-padding uk-card-default">
+                        <h3>Общая информация</h3>
+                        <p>В процессе строительства, эксплуатации и ремонта зданий и сооружений строительные изделия и конструкции, из которых они
+                            возводятся, подвергаются различным физико-механическим, физическим и технологическим воздействиям. От инженера-строителя
+                            требуется со знанием дела правильно выбрать материал, изделия или конструкцию, которая обладает достаточной стойкостью,
+                            надежностью и долговечностью для конкретных условий.</p>
+                        <h3>Наши услуги</h3>
+                        <div class="uk-grid uk-child-width-1-1" uk-grid="">
+                            <div class="uk-grid uk-child-width-auto@m" uk-grid>
+                                <div class="uk-width-auto@s uk-margin-small-right">
+                                    <img src="{% static 'img/png/m1.png' %}" alt="" >
+                                </div>
+                                <div class="uk-width-expand@s">
+                                    <h3>Услуга разгрузки и подъема</h3>
+                                    <p>При наличии лифта стоимость разгрузки и подъема составляет 1 200 рублей за 1 т, вне зависимости от этажа подъема.</p>
+                                    <p>При отсутствии лифта стоимость разгрузки и подъема 1 т на определенный этаж рассчитывается калькулятором разгрузки при оформлении заказа.</p>
+                                </div>
+                            </div>
+                            <div class="uk-grid uk-child-width-auto@m" uk-grid>
+                                <div class="uk-width-auto@s uk-margin-small-right">
+                                    <img src="{% static 'img/png/m2.png' %}" alt="" >
+                                </div>
+                                <div class="uk-width-expand@s">
+                                    <h3>Услуга резки гипсокартона, дерева и металла</h3>
+                                    <p>Услуга резки гипсокартона, дерева и металла предоставляется абсолютно БЕСПЛАТНО.</p>
+                                </div>
+                            </div>
+                            <div class="uk-grid uk-child-width-auto@m" uk-grid>
+                                <div class="uk-width-auto@s uk-margin-small-right">
+                                    <img src="{% static 'img/png/m3.png' %}" alt="" >
+                                </div>
+                                <div class="uk-width-expand@s">
+                                    <h3>Колеровка краски</h3>
+                                    <p>Колеровка краски производится с помощью современного оборудования, характеризующегося высокой точностью дозировки и равномерностью распределения пигмента.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

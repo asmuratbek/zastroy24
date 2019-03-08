@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% load staticfiles news_helper client_helper %}
+
+{% block meta %}
+    <meta name="og:title" content="{{ post.title }}">
+    <meta name="og:description" content="{{ post.content|clean_html }}">
+    <meta name="og:image" content="{% if post.preview %}{{ post.preview|get_wt_image_url }}{% else %}{% static 'img/f1.jpg' %}{% endif %}">
+{% endblock %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+    <div class="uk-container uk-container-large uk-margin-medium-top">
+        <ul class="uk-breadcrumb uk-flex-middle uk-flex">
+            <li><a href="{% url 'client_app:index' %}"><span uk-icon="icon: home"></span></a></li>
+            <li><a href="{% url 'news:list' %}">Новости</a></li>
+            <li><span>{{ post.title }}</span></li>
+        </ul>
+    </div>
+    <section class="single_best_promotions uk-margin-medium-top">
+        <div class="uk-container uk-container-large">
+            <div class="uk-width-1-1 uk-margin-remove uk-box-shadow-hover-xlarge uk-padding uk-card-default" uk-grid>
+                <div class="uk-width-1-3@m uk-cover-container">
+                    <img src="{% if post.preview %}{{ post.preview.url }}{% endif %}" alt="{{ post.title }}" uk-cover>
+                    <canvas width="600" height="400"></canvas>
+                </div>
+                <div class="uk-width-expand@m ">
+                    <div class="">
+                        <div class="title">
+                            <h1>{{ post.title }}</h1>
+                        </div>
+                        {{ post.content|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
